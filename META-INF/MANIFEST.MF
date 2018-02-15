@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: BattleShip2D
+Implementation-Version: 1.0
+Permissions: sandbox
+Codebase: *
+JavaFX-Version: 8.0
+Created-By: JavaFX Packager
+Implementation-Vendor: xskapin
+Main-Class: battleship2D.ui.BattleShip2D
+
