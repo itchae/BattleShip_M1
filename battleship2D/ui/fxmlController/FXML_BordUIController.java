@@ -6,18 +6,12 @@
 package battleship2D.ui.fxmlController;
 
 import battleship2D.model.BoardModel;
-import battleship2D.ui.CellUI;
-import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
 
 /**
  * FXML Controller class
@@ -27,6 +21,14 @@ import javafx.scene.layout.Region;
 public class FXML_BordUIController implements Initializable {
     @FXML
     private GridPane root;
+    @FXML
+    private ArrayList<FXML_CellUIController> cellsController;
+    
+    
+    /** Related board model */
+    protected  BoardModel boardModel;
+    /** Board name */
+    private  String name;
     
     /**
      * Initializes the controller class.
@@ -34,7 +36,15 @@ public class FXML_BordUIController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {// Localisation du fichier FXML.
      
-      
-    }    
+    }
+
+    public void construct(String name, BoardModel boardModel, Boolean isBound){
+        this.boardModel = boardModel;
+        this.name = name;
+    }
+    
+    public BoardModel getBoardModel(){
+        return this.boardModel;
+    }
     
 }

@@ -5,9 +5,13 @@
  */
 package battleship2D.ui.fxmlController;
 
+import battleship2D.model.Fleet;
+import battleship2D.model.Ship;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ChoiceBox;
 
 /**
  * FXML Controller class
@@ -16,6 +20,8 @@ import javafx.fxml.Initializable;
  */
 public class FXML_ShipInsertionController implements Initializable {
 
+    @FXML
+    private ChoiceBox choiceBox;
     /**
      * Initializes the controller class.
      */
@@ -24,4 +30,9 @@ public class FXML_ShipInsertionController implements Initializable {
         // TODO
     }    
     
+    public void construct(Fleet fleet){
+         for (Ship ship : fleet.getShips()) {
+            this.choiceBox.getItems().add(ship.getDescription());            
+        }
+    }
 }

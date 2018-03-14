@@ -5,6 +5,8 @@
  */
 package battleship2D.ui.fxmlController;
 
+import battleship2D.model.BoardModel;
+import battleship2D.model.CellType;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -28,9 +30,13 @@ public class FXML_MainFrameController implements Initializable {
     
     @FXML
     private VBox bottom;
+    @FXML
+    private FXML_ShipInsertionController shipInsertionController;
     
     @FXML
     private AnchorPane player;
+    @FXML
+    private FXML_BordUIPlayerController playerController;
     
     @FXML
     private AnchorPane computer;
@@ -45,6 +51,12 @@ public class FXML_MainFrameController implements Initializable {
         bottom.maxWidthProperty().bind(root.widthProperty());
         player.prefWidthProperty().bind(root.widthProperty().divide(2));
         computer.prefWidthProperty().bind(root.widthProperty().divide(2));
-    }    
+        
+        //construct
+        playerController.construct("Player", new BoardModel(CellType.OCEAN), true);
+        this.shipInsertionController.construct(this.playerController.getBoardModel().getFleet());
+    } 
+    
+    
     
 }

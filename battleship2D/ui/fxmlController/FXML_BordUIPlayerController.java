@@ -5,6 +5,7 @@
  */
 package battleship2D.ui.fxmlController;
 
+import battleship2D.model.BoardModel;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -25,6 +26,9 @@ public class FXML_BordUIPlayerController implements Initializable {
     @FXML
     private GridPane grid;
     
+    @FXML
+    private FXML_BordUIController gridController; 
+    
     /**
      * Initializes the controller class.
      */
@@ -33,4 +37,11 @@ public class FXML_BordUIPlayerController implements Initializable {
         grid.prefWidthProperty().bind(root.widthProperty());
     }    
     
+    public void construct (String name, BoardModel boardModel, Boolean isBound){
+        gridController.construct(name, boardModel, isBound);
+    }
+    
+    public BoardModel getBoardModel(){
+        return gridController.getBoardModel();
+    }
 }
