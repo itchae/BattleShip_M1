@@ -6,7 +6,13 @@
 package battleship2D.ui.fxmlController;
 
 import battleship2D.model.BoardModel;
+import battleship2D.model.CellModel;
 import battleship2D.model.CellType;
+import battleship2D.model.Coord2D;
+import battleship2D.model.ShipType;
+import battleship2D.model.Turn;
+import battleship2D.ui.CellUI;
+import battleship2D.ui.GameStages;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -40,6 +46,12 @@ public class FXML_MainFrameController implements Initializable {
     
     @FXML
     private AnchorPane computer;
+    @FXML
+    private FXML_BordUIComputerController computerController;
+    
+    
+    /** Current game stage */
+    private GameStages gameStage;
     
     /**
      * Initializes the controller class.
@@ -57,6 +69,88 @@ public class FXML_MainFrameController implements Initializable {
         this.shipInsertionController.construct(this.playerController.getBoardModel().getFleet());
     } 
     
+    /**
+     * Updates the stage of the game
+     * @param gameStage new game stage
+     */
+    public void changeState(GameStages gameStage) {
+        setGameStage(gameStage);
+        
+       /* switch(this.gameStage) {
+            case PLACE_SHIPS_ON_PLAYER_BOARD:
+                // The main interface is created and the player board is displayed.                
+                break;
+                
+            case INIT_COMPUTER_BOARD:
+                initComputerBoard();                   
+                break;
+                
+            case PLAY:
+                if (this.turn == Turn.PLAYER) {
+                    // Enables player interactivity 
+                    this.borderPane.setMouseTransparent(false);
+                    
+                    // A cell is randomly chosen to be the missile source. 
+                    //    The source may be any ship of the player board.
+                    CellModel sourceCellModel = null;
+                    
+                    // Search for the first ship that has not been completely destroyed yet. 
+                    for (ShipType shipType : ShipType.values()) {
+                        sourceCellModel = this.playerBoard.getBoardModel().findFirstCellOfType(CellType.shipTypeToCellType(shipType));
+                        if (sourceCellModel != null) {
+                            break;
+                        }
+                    }
+                    if (sourceCellModel != null) {
+                        CellUI cellUI = this.playerBoard.findCellUIFromModel(sourceCellModel);
+                        if (cellUI != null) {
+                            this.playerBoard.setMissileSource(cellUI);
+                        }
+                    }
+                    this.messages.append("[Player] Please choose a target on the computer board.\n");                    
+                    
+                } 
+                else {                   
+                    this.borderPane.setMouseTransparent(true);
+                    this.messages.append("[Computer] Playing...\n");
+                    
+                    // A cell is randomly chosen to be the missile source. 
+                    //    The source may be any cell tagged as "UNKNOWN" in the computer board,
+                    //    to avoid the player discovering a computer's ship.
+                    CellModel sourceCellModel = this.computerBoard.getBoardModel().randomCell(CellType.UNKNOWN, Boolean.TRUE);
+                    if (sourceCellModel != null) {
+                        CellUI cellUI = this.computerBoard.findCellUIFromModel(sourceCellModel);
+                        if (cellUI != null) {
+                            this.computerBoard.setMissileSource(cellUI);
+                        }
+                    }
+                    
+                    // A cell is randomly chosen to be the destination of the computer missile.                     
+                    Coord2D cellCoords = this.computerBoard.findMissileDestinationCell();
+                    CellModel destCellModel = this.playerBoard.getBoardModel().getCellModel(cellCoords.getRow(), cellCoords.getColumn());
+
+                    if (destCellModel != null) {
+                        CellUI cellUI = this.playerBoard.findCellUIFromModel(destCellModel);
+                        if (cellUI != null) {
+                            this.playerBoard.setMissileDestination(cellUI);
+                            launchMissiles(this.playerBoard, this.computerBoard);
+                            
+                            // The computer board keeps a copy of the type of the targeted cell in the player board.
+                            this.computerBoard.getLastCellTargeted().setCellType(cellUI.getCellModel().getCellType());
+                            
+                        }
+                    }
+                }
+                break;
+                
+            default:
+                break;
+        }*/
+    }
+    
+    public void setGameStage(GameStages gameStage) {
+        this.gameStage = gameStage;
+    }
     
     
 }

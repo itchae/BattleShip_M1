@@ -5,6 +5,8 @@
  */
 package battleship2D.ui.fxml;
 
+import battleship2D.ui.GameStages;
+import battleship2D.ui.fxmlController.FXML_MainFrameController;
 import java.io.IOException;
 import java.net.URL;
 import javafx.application.Application;
@@ -40,13 +42,16 @@ public class FXML_BattleShip2D extends Application   {
       final FXMLLoader fxmlLoader = new FXMLLoader(url);
       // Chargement du FXML.
       root = (AnchorPane) fxmlLoader.load();
+      // config du controller
+      ((FXML_MainFrameController)fxmlLoader.getController()).changeState(GameStages.PLACE_SHIPS_ON_PLAYER_BOARD); 
+      
+        
       // Création de la scène.;
     } catch (IOException ex) {
       System.err.println("Erreur au chargement: " + ex);
-    }            
-       // BattleShip2D.mainFrame.changeState(GameStages.PLACE_SHIPS_ON_PLAYER_BOARD); 
-      
+    }   
         
+       
         Scene scene = new Scene(FXML_BattleShip2D.root, 900,600);
         primaryStage.setScene(scene);
         primaryStage.show();        
