@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package battleship2D.ui.fxml;
+package battleship2D.ui.fxmlController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -14,7 +14,7 @@ import javafx.fxml.Initializable;
  *
  * @author Jeremy
  */
-public class FXML_TitleController implements Initializable {
+public class FXML_CellUIController implements Initializable {
 
     /**
      * Initializes the controller class.

@@ -6,6 +6,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_MessagesController">
-    
-</AnchorPane>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+
+<ScrollPane fx:id="root" prefHeight="80"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_MessagesController">
+    <content>
+        <TextArea text="[Player] Select your ships and place them on your board (mouse button 1 to validate, mouse button 3 to cancel)."
+        editable="false" fx:id="text">
+            
+        </TextArea>
+    </content>
+</ScrollPane>

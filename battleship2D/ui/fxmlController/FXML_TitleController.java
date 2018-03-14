@@ -7,27 +7,21 @@ package battleship2D.ui.fxmlController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
 
 /**
  * FXML Controller class
  *
  * @author Jeremy
  */
-public class FXML_MessagesController implements Initializable {
+public class FXML_TitleController implements Initializable {
 
-    @FXML
-    private ScrollPane root;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.root.setFitToHeight(true);
-       root.setFitToWidth(true);
+        // TODO
     }    
     
 }
