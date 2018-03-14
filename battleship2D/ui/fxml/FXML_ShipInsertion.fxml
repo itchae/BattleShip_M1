@@ -6,6 +6,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane"   xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_ShipInsertionController">
-    
-</AnchorPane>
+<HBox fx:id="root" alignment="TOP_CENTER"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_ShipInsertionController">
+    <children>
+        <VBox fx:id="shipChoiceBox" alignment="CENTER">
+            <ChoiceBox fx:id="choiceBox">
+                
+            </ChoiceBox>
+        </VBox>
+        <VBox fx:id="buttonsBox">
+            <Button fx:id="doneButton" text="done">
+                
+            </Button>
+        </VBox>
+    </children>
+</HBox>

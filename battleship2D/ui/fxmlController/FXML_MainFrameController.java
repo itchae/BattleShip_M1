@@ -42,11 +42,9 @@ public class FXML_MainFrameController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         center.prefWidthProperty().bind(root.widthProperty());
         bottom.prefWidthProperty().bind(root.widthProperty());
+        bottom.maxWidthProperty().bind(root.widthProperty());
         player.prefWidthProperty().bind(root.widthProperty().divide(2));
         computer.prefWidthProperty().bind(root.widthProperty().divide(2));
-        center.prefHeightProperty().bind(root.heightProperty().subtract(center.heightProperty().add(bottom.heightProperty())));
-       // player.prefHeightProperty().bind(center.heightProperty());
-       // computer.prefHeightProperty().bind(center.heightProperty());
     }    
     
 }
