@@ -6,8 +6,10 @@
 package battleship2D.ui.fxmlController;
 
 import battleship2D.model.BoardModel;
+import battleship2D.ui.CellUI;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
@@ -18,30 +20,30 @@ import javafx.scene.layout.GridPane;
  *
  * @author Jeremy
  */
-public class FXML_BordUIPlayerController implements Initializable {
+public class FXML_BordUIPlayerController extends FXML_BordUIController implements Initializable {
 
     @FXML
-    private AnchorPane root;
+    private GridPane root;
     
-    @FXML
-    private GridPane grid;
-    
-    @FXML
-    private FXML_BordUIController gridController; 
     
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        grid.prefWidthProperty().bind(root.widthProperty());
+        root.prefWidthProperty().bind(root.widthProperty());
     }    
     
     public void construct (String name, BoardModel boardModel, Boolean isBound){
-        gridController.construct(name, boardModel, isBound);
+        super.construct(name, boardModel, isBound);
     }
     
     public BoardModel getBoardModel(){
-        return gridController.getBoardModel();
+        return super.getBoardModel();
+    }
+    
+    @Override
+    protected  void add (CellUI c , int row , int column){
+        root.add(c,row,column);
     }
 }

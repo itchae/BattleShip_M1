@@ -7,6 +7,7 @@ package battleship2D.ui.fxmlController;
 
 import battleship2D.model.BoardModel;
 import battleship2D.model.SkillLevel;
+import battleship2D.ui.CellUI;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -19,15 +20,11 @@ import javafx.scene.layout.GridPane;
  *
  * @author Jeremy
  */
-public class FXML_BordUIComputerController implements Initializable {
+public class FXML_BordUIComputerController extends FXML_BordUIController implements Initializable {
 
     @FXML
-    private AnchorPane root;
+    private GridPane root;
     
-    @FXML
-    private GridPane grid;
-    @FXML
-    private FXML_BordUIController gridController;
     
      /** Skill level for the computer */
     private  SkillLevel skillLevel;
@@ -37,12 +34,17 @@ public class FXML_BordUIComputerController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        grid.prefWidthProperty().bind(root.widthProperty());
+        root.prefWidthProperty().bind(root.widthProperty());
     }    
     
     public void construct(String name, BoardModel boardModel, Boolean isBound,
             SkillLevel skillLevel){
-        this.gridController.construct(name, boardModel, isBound);
+        super.construct(name, boardModel, isBound);
         this.skillLevel = skillLevel;
+    }
+    
+       @Override
+    protected  void add (CellUI c , int row , int column){
+        root.add(c,row,column);
     }
 }

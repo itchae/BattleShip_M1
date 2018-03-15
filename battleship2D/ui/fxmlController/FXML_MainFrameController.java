@@ -13,8 +13,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -37,12 +37,12 @@ public class FXML_MainFrameController implements Initializable {
     private FXML_ShipInsertionController shipInsertionController;
     
     @FXML
-    private AnchorPane player;
+    private GridPane player;
     @FXML
     private FXML_BordUIPlayerController playerController;
     
     @FXML
-    private AnchorPane computer;
+    private GridPane computer;
     @FXML
     private FXML_BordUIComputerController computerController;
     

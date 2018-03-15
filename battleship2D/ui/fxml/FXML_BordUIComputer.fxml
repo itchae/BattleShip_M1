@@ -6,8 +6,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="root" prefHeight="400.0" prefWidth="400.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_BordUIComputerController">
-    <children>
-        <fx:include source="FXML_BordUI.fxml" visible="false" fx:id="grid"/>
-    </children>
-</AnchorPane>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane fx:id="root" prefHeight="400.0" prefWidth="400.0" visible="false" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_BordUIComputerController">
+    <stylesheets>
+        <URL value="@/battleship2D/ui/fxmlCSS/fxml_bordui.css"/>
+    </stylesheets>
+    
+</GridPane>
