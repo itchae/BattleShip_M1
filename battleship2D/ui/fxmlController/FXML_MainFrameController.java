@@ -6,12 +6,9 @@
 package battleship2D.ui.fxmlController;
 
 import battleship2D.model.BoardModel;
-import battleship2D.model.CellModel;
 import battleship2D.model.CellType;
-import battleship2D.model.Coord2D;
-import battleship2D.model.ShipType;
-import battleship2D.model.Turn;
-import battleship2D.ui.CellUI;
+import battleship2D.model.SkillLevel;
+import battleship2D.ui.Config;
 import battleship2D.ui.GameStages;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -67,6 +64,8 @@ public class FXML_MainFrameController implements Initializable {
         //construct
         playerController.construct("Player", new BoardModel(CellType.OCEAN), true);
         this.shipInsertionController.construct(this.playerController.getBoardModel().getFleet());
+        this.computerController.construct("Computer", new BoardModel(CellType.UNKNOWN), 
+                false, Config.level);
     } 
     
     /**

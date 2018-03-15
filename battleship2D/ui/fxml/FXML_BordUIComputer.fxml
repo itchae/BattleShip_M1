@@ -8,6 +8,6 @@
 
 <AnchorPane fx:id="root" prefHeight="400.0" prefWidth="400.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_BordUIComputerController">
     <children>
-        <fx:include source="FXML_BordUI.fxml" visible="true" fx:id="grid"/>
+        <fx:include source="FXML_BordUI.fxml" visible="false" fx:id="grid"/>
     </children>
 </AnchorPane>
