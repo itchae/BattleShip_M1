@@ -7,7 +7,6 @@ package battleship2D.ui.fxmlController;
 
 import battleship2D.model.BoardModel;
 import battleship2D.model.CellType;
-import battleship2D.model.SkillLevel;
 import battleship2D.ui.Config;
 import battleship2D.ui.GameStages;
 import java.net.URL;
@@ -15,6 +14,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -26,7 +26,7 @@ import javafx.scene.layout.VBox;
 public class FXML_MainFrameController implements Initializable {
 
     @FXML
-    private AnchorPane root;
+    private BorderPane root;
     
     @FXML
     private HBox center;

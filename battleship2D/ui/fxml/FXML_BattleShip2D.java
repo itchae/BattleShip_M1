@@ -14,6 +14,7 @@ import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /**
@@ -26,7 +27,7 @@ public class FXML_BattleShip2D extends Application   {
     /*=========================================================================*/
     
     /** Game manager */    
-    private static AnchorPane root;
+    private static BorderPane root;
    
     
     /*=========================================================================*/
@@ -41,7 +42,7 @@ public class FXML_BattleShip2D extends Application   {
       // Création du loader.
       final FXMLLoader fxmlLoader = new FXMLLoader(url);
       // Chargement du FXML.
-      root = (AnchorPane) fxmlLoader.load();
+      root = (BorderPane) fxmlLoader.load();
       // config du controller
       ((FXML_MainFrameController)fxmlLoader.getController()).changeState(GameStages.PLACE_SHIPS_ON_PLAYER_BOARD); 
       
