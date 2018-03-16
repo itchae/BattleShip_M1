@@ -34,6 +34,7 @@ import battleship2D.ui.Missile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.layout.AnchorPane;
 /**
  * FXML Controller class
  *
@@ -42,7 +43,10 @@ import javafx.beans.property.SimpleDoubleProperty;
 public class FXML_MainFrameController implements Initializable {
 
     @FXML
-    private BorderPane root;
+    private BorderPane borderPane;
+    
+    @FXML
+    private AnchorPane root;
     
     @FXML
     private HBox center;
@@ -90,11 +94,6 @@ public class FXML_MainFrameController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       center.prefWidthProperty().bind(root.widthProperty());
-        bottom.prefWidthProperty().bind(root.widthProperty());
-        bottom.maxWidthProperty().bind(root.widthProperty());
-        player.prefWidthProperty().bind(root.widthProperty().divide(2));
-        computer.prefWidthProperty().bind(root.widthProperty().divide(2));
         
         //construct
         playerController.construct("Player", new BoardModel(CellType.OCEAN), true);
@@ -107,7 +106,7 @@ public class FXML_MainFrameController implements Initializable {
         this.missile = new Missile();       
         this.explosion = new Explosion(20,20);         
         this.endGame = null;
-        //initRoot();
+        initRoot();
         initListener();
         initPlayerBoard();        
         initShipSelection(); 
@@ -120,7 +119,8 @@ public class FXML_MainFrameController implements Initializable {
         this.turn = Turn.PLAYER;
     } 
     
-    /**
+    //leurs codes
+     /**
      * Updates the stage of the game
      * @param gameStage new game stage
      */
@@ -129,7 +129,7 @@ public class FXML_MainFrameController implements Initializable {
         
         switch(this.gameStage) {
             case PLACE_SHIPS_ON_PLAYER_BOARD:
-                // The main interface is created and the player board is displayed.                
+                /* The main interface is created and the player board is displayed. */                
                 break;
                 
             case INIT_COMPUTER_BOARD:
@@ -138,14 +138,14 @@ public class FXML_MainFrameController implements Initializable {
                 
             case PLAY:
                 if (this.turn == Turn.PLAYER) {
-                    // Enables player interactivity 
-                    this.root.setMouseTransparent(false);
+                    /* Enables player interactivity */
+                    this.borderPane.setMouseTransparent(false);
                     
-                    // A cell is randomly chosen to be the missile source. 
-                    //    The source may be any ship of the player board.
+                    /* A cell is randomly chosen to be the missile source. 
+                        The source may be any ship of the player board. */
                     CellModel sourceCellModel = null;
                     
-                    // Search for the first ship that has not been completely destroyed yet. 
+                    /* Search for the first ship that has not been completely destroyed yet. */
                     for (ShipType shipType : ShipType.values()) {
                         sourceCellModel = this.playerController.getBoardModel().findFirstCellOfType(CellType.shipTypeToCellType(shipType));
                         if (sourceCellModel != null) {
@@ -162,12 +162,12 @@ public class FXML_MainFrameController implements Initializable {
                     
                 } 
                 else {                   
-                    this.root.setMouseTransparent(true);
+                    this.borderPane.setMouseTransparent(true);
                     this.msgController.append("[Computer] Playing...\n");
                     
-                    // A cell is randomly chosen to be the missile source. 
-                    //    The source may be any cell tagged as "UNKNOWN" in the computer board,
-                    //    to avoid the player discovering a computer's ship.
+                    /* A cell is randomly chosen to be the missile source. 
+                        The source may be any cell tagged as "UNKNOWN" in the computer board,
+                        to avoid the player discovering a computer's ship.*/
                     CellModel sourceCellModel = this.computerController.getBoardModel().randomCell(CellType.UNKNOWN, Boolean.TRUE);
                     if (sourceCellModel != null) {
                         CellUI cellUI = this.computerController.findCellUIFromModel(sourceCellModel);
@@ -176,7 +176,7 @@ public class FXML_MainFrameController implements Initializable {
                         }
                     }
                     
-                    // A cell is randomly chosen to be the destination of the computer missile.                     
+                    /* A cell is randomly chosen to be the destination of the computer missile. */                    
                     Coord2D cellCoords = this.computerController.findMissileDestinationCell();
                     CellModel destCellModel = this.playerController.getBoardModel().getCellModel(cellCoords.getRow(), cellCoords.getColumn());
 
@@ -186,7 +186,7 @@ public class FXML_MainFrameController implements Initializable {
                             this.playerController.setMissileDestination(cellUI);
                             launchMissiles(this.playerController, this.computerController);
                             
-                            // The computer board keeps a copy of the type of the targeted cell in the player board.
+                            /* The computer board keeps a copy of the type of the targeted cell in the player board. */
                             this.computerController.getLastCellTargeted().setCellType(cellUI.getCellModel().getCellType());
                             
                         }
@@ -198,18 +198,144 @@ public class FXML_MainFrameController implements Initializable {
                 break;
         }
     }
+
+
+    /* 
+     * Getters/Setters 
+     */
     
+    public FXML_BordUIPlayerController getPlayerBoard() {
+        return this.playerController;
+    }
+
+    public FXML_BordUIComputerController getComputerBoard() {
+        return this.computerController;
+    }
+    
+    public GameStages getGameStage() {
+        return this.gameStage;
+    }
+
     public void setGameStage(GameStages gameStage) {
         this.gameStage = gameStage;
     }
     
-       /**
-     * Initializes data for ship selection
+    public AnchorPane getRoot() {
+        return this.root;
+    }
+    public FXML_ShipInsertionController getShipSelection() {
+        return this.shipInsertionController;
+    }
+
+
+    /*=========================================================================*/
+    /* Private methods                                                         */       
+    /*=========================================================================*/
+
+    /**
+     * Displays information about the last ship hit by a missile
+     * @param boardUI - hit board
+     * @param shipType - the kind of ship that was hit
+     * @see initListener()
+     */
+    private void displayLastHitInfo(FXML_BordUIController boardUI, ShipType shipType) {
+        Fleet fleet = boardUI.getBoardModel().getFleet();
+        Ship hitShip = fleet.findShipFromType(shipType);        
+        
+        if (hitShip != null) {           
+            this.msgController.append("[" + boardUI.getName() + "] A ship has been hit!\n");
+            
+            if (fleet.isLastHitShipDestroyed()) {
+                this.msgController.append("[" + boardUI.getName() + "] " + hitShip.getDescription() + " has been destroyed!!\n");
+                
+                /* If the destroyed ship was part of the player's fleet, notifies the computer side */
+                if (boardUI == this.playerController) {
+                    this.computerController.updateInfoAboutAdverseDestroyedShip(hitShip.getDescription());
+                }
+                
+                if (fleet.isFleetDestroyed()) {
+                    this.msgController.append("[" + boardUI.getName() + "] " + "The whole fleet has been destroyed!!!\n");
+                    if (boardUI == this.playerController) {
+                        runEndGame(false);
+                    }
+                    else {
+                        runEndGame(true);
+                    }
+                }
+            }
+        }        
+    }
+    
+    /**
+     * Shows different locations for placing the currently selected ship type
+     * on the player board
+     * @param cellModel - first cell of the span representing the ship
+     * @see initListener()
+     */    
+    private void displayValidShipSites(CellModel cellModel) {          
+        int selectedShipIndex = getShipSelection().selectedShipIndex();        
+        Ship selectedShip = this.playerController.getBoardModel().getFleet().getShips().get(selectedShipIndex);        
+        int shipSize = selectedShip.getSize();        
+        
+        /* Searches for horizontal and vertical sets of cells available to receive the ship */
+        this.playerController.availableCellSpanByDirection(cellModel, Direction.NORTH, shipSize);                
+        this.playerController.availableCellSpanByDirection(cellModel, Direction.WEST, shipSize);
+        this.playerController.availableCellSpanByDirection(cellModel, Direction.SOUTH, shipSize);
+        this.playerController.availableCellSpanByDirection(cellModel, Direction.EAST, shipSize);
+    }
+    
+    /**
+     * Initializes computer board's fleet and displays it
+     * @see changeState()
+     */
+    private void initComputerBoard() {
+        /* No action from both the player board and the ship selection widgets are allowed anymore */
+        this.playerController.removePropertyChangeListener(this.propertyChangeListener);
+        this.shipInsertionController.removePropertyChangeListener(this.propertyChangeListener);
+
+        /* The widgets for setting ships location are made invisible */
+        this.shipInsertionController.hide();
+
+        /* The computer board is displayed */        
+        this.computerController.setVisible(true);
+        
+        /* And its ships are randomly placed on without any user action. */
+        this.computerController.placeShipsOnBoardAtRandom();
+        
+        /* The computer board can now send signals to this. */
+        this.computerController.addPropertyChangeListener(this.propertyChangeListener);
+        
+        /* The missile trajectory endpoints are bound up with cell coordinates */
+        this.missile.getTranslateTransition().fromXProperty().bind(this.missileSourceX);        
+        this.missile.getTranslateTransition().fromYProperty().bind(this.missileSourceY);
+        this.missile.getTranslateTransition().toXProperty().bind(this.missileDestX);        
+        this.missile.getTranslateTransition().toYProperty().bind(this.missileDestY);
+        
+        /* This MainFrame will be notified when the missile animation has finished */
+        this.missile.addPropertyChangeListener(this.propertyChangeListener);
+        
+        changeState(GameStages.PLAY);
+    }
+   
+    /**
+     * Initializes the animation played when the games ends
      * @see MainFrame()
      */
-    private void initShipSelection() {        
-        this.shipInsertionController.addPropertyChangeListener(this.propertyChangeListener);
+    private void initEndGame() {        
+        this.endGame.prefWidthProperty().bind(this.borderPane.widthProperty()); 
+        this.endGame.prefHeightProperty().bind(this.borderPane.heightProperty());
+        this.endGame.setVisible(false);
+        this.root.getChildren().addAll(this.endGame);
     }
+    
+    /**
+     * Initializes data related to ship explosion
+     * @see MainFrame()
+     */
+    private void initExplosion() {
+        this.explosion.setVisible(false);
+    }
+    
     
     /**
      * Initializes the boards listener
@@ -261,6 +387,37 @@ public class FXML_MainFrameController implements Initializable {
     }
     
     /**
+     * Initializes player's board
+     * @see MainFrame()
+     */
+    private void initPlayerBoard() {        
+        this.playerController.addPropertyChangeListener(this.propertyChangeListener);        
+    }
+    
+    /**
+     * Starts the construction of all elements
+     * @see MainFrame()
+     */
+    private void initRoot() {       
+        center.prefWidthProperty().bind(root.widthProperty());
+        bottom.prefWidthProperty().bind(root.widthProperty());
+        bottom.maxWidthProperty().bind(root.widthProperty());
+        player.prefWidthProperty().bind(root.widthProperty().divide(2));
+        computer.prefWidthProperty().bind(root.widthProperty().divide(2));
+        this.root.getChildren().addAll(missile.getRoot());
+        this.root.getChildren().addAll(this.explosion);
+    }
+    
+    /**
+     * Initializes data for ship selection
+     * @see MainFrame()
+     */
+    private void initShipSelection() {        
+        this.shipInsertionController.addPropertyChangeListener(this.propertyChangeListener);
+    }
+
+    
+    /**
      * Displays missile flight from a board to the other
      * @param destBoardUI - Trajectory destination board
      * @param sourceBoardUI - Trajectory source board
@@ -287,7 +444,7 @@ public class FXML_MainFrameController implements Initializable {
         .add(sourceCellUI.heightProperty().divide(2))
         .add(sourceBoardUI.layoutYProperty()).add(this.center.layoutYProperty()));
         
-        this.missile.play();   
+        this.missile.play();    
     }
     
     /**
@@ -338,133 +495,40 @@ public class FXML_MainFrameController implements Initializable {
             /* The stage about placing ships has ended. Next stage begins.  */
             changeState(GameStages.INIT_COMPUTER_BOARD);  
             }
+        }            
+    }
+   
+    /**
+     * Activate the end game animation
+     * @param playerWins - true if the player has won the game, false otherwise
+     */
+    private void runEndGame(Boolean playerWins) {        
+        this.endGame = new EndGame(playerWins);
+        initEndGame();   
+        
+        /* Waits for 2.5s before displaying the end game animation, in order to see the last (piece of) ship explosion. */
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.endGame.start(); 
     }
-        
-        /**
-        * @return the type of the currently selected ship 
-        * @param boardUI - board upon which the ship is located
-        * @see initListener()
-        */
-       private ShipType selectedShipType(FXML_BordUIController boardUI) {
-           int selectedShipIndex = this.getShipSelection().selectedShipIndex();  
-          
-           Ship selectedShip = boardUI.getBoardModel().getFleet().getShips().get(selectedShipIndex);
-
-           return selectedShip.getShipType();
-       }
     
-       /**
-     * Shows different locations for placing the currently selected ship type
-     * on the player board
-     * @param cellModel - first cell of the span representing the ship
-     * @see initListener()
-     */    
-    private void displayValidShipSites(CellModel cellModel) {          
-        int selectedShipIndex = getShipSelection().selectedShipIndex();        
-        Ship selectedShip = this.playerController.getBoardModel().getFleet().getShips().get(selectedShipIndex);        
-        int shipSize = selectedShip.getSize();        
-        
-        /* Searches for horizontal and vertical sets of cells available to receive the ship */
-        this.playerController.availableCellSpanByDirection(cellModel, Direction.NORTH, shipSize);                
-        this.playerController.availableCellSpanByDirection(cellModel, Direction.WEST, shipSize);
-        this.playerController.availableCellSpanByDirection(cellModel, Direction.SOUTH, shipSize);
-        this.playerController.availableCellSpanByDirection(cellModel, Direction.EAST, shipSize);
-    }
-
-    
-    public FXML_ShipInsertionController getShipSelection() {
-        return this.shipInsertionController;
-    }
-
-
     /**
-     * Displays information about the last ship hit by a missile
-     * @param boardUI - hit board
-     * @param shipType - the kind of ship that was hit
+     * @return the type of the currently selected ship 
+     * @param boardUI - board upon which the ship is located
      * @see initListener()
      */
-    private void displayLastHitInfo(FXML_BordUIController boardUI, ShipType shipType) {
-        Fleet fleet = boardUI.getBoardModel().getFleet();
-        Ship hitShip = fleet.findShipFromType(shipType);        
+    private ShipType selectedShipType(FXML_BordUIController boardUI) {
+        int selectedShipIndex = this.getShipSelection().selectedShipIndex();        
         
-        if (hitShip != null) {           
-            this.msgController.append("[" + boardUI.getName() + "] A ship has been hit!\n");
-            
-            if (fleet.isLastHitShipDestroyed()) {
-                this.msgController.append("[" + boardUI.getName() + "] " + hitShip.getDescription() + " has been destroyed!!\n");
-                
-                /* If the destroyed ship was part of the player's fleet, notifies the computer side */
-                if (boardUI == this.playerController) {
-                    this.computerController.updateInfoAboutAdverseDestroyedShip(hitShip.getDescription());
-                }
-                
-                if (fleet.isFleetDestroyed()) {
-                    this.msgController.append("[" + boardUI.getName() + "] " + "The whole fleet has been destroyed!!!\n");
-                    if (boardUI == this.playerController) {
-                        runEndGame(false);
-                    }
-                    else {
-                        runEndGame(true);
-                    }
-                }
-            }
-        }        
+        Ship selectedShip = boardUI.getBoardModel().getFleet().getShips().get(selectedShipIndex);
+        
+        return selectedShip.getShipType();
     }
-    
-        /**
-     * Initializes the animation played when the games ends
-     * @see MainFrame()
-     */
-    private void initEndGame() {        
-        this.endGame.prefWidthProperty().bind(this.root.widthProperty()); 
-        this.endGame.prefHeightProperty().bind(this.root.heightProperty());
-        this.endGame.setVisible(false);
-        this.root.getChildren().addAll(this.endGame);
-    }
-    
-    /**
-     * Initializes data related to ship explosion
-     * @see MainFrame()
-     */
-    private void initExplosion() {
-        this.explosion.setVisible(false);
-    }
-    
-    /**
-     * Initializes computer board's fleet and displays it
-     * @see changeState()
-     */
-    private void initComputerBoard() {
-        /* No action from both the player board and the ship selection widgets are allowed anymore */
-        this.playerController.removePropertyChangeListener(this.propertyChangeListener);
-        this.shipInsertionController.removePropertyChangeListener(this.propertyChangeListener);
 
-        /* The widgets for setting ships location are made invisible */
-        this.shipInsertionController.hide();
-
-        /* The computer board is displayed */        
-        this.computerController.setVisible(true);
-        
-        /* And its ships are randomly placed on without any user action. */
-        this.computerController.placeShipsOnBoardAtRandom();
-        
-        /* The computer board can now send signals to this. */
-        this.computerController.addPropertyChangeListener(this.propertyChangeListener);
-        
-        /* The missile trajectory endpoints are bound up with cell coordinates */
-        this.missile.getTranslateTransition().fromXProperty().bind(this.missileSourceX);        
-        this.missile.getTranslateTransition().fromYProperty().bind(this.missileSourceY);
-        this.missile.getTranslateTransition().toXProperty().bind(this.missileDestX);        
-        this.missile.getTranslateTransition().toYProperty().bind(this.missileDestY);
-        
-        /* This MainFrame will be notified when the missile animation has finished */
-        this.missile.addPropertyChangeListener(this.propertyChangeListener);
-        
-        changeState(GameStages.PLAY);
-    }
-    
-       /**
+    /**
      * Places the explosion animation over the last cell representing a ship
      * hit by a missile and plays it
      * @param boardUI - the Board containing the cell
@@ -485,30 +549,4 @@ public class FXML_MainFrameController implements Initializable {
             this.explosion.start();
         }            
     }
-    /**
-     * Initializes player's board
-     * @see MainFrame()
-     */
-    private void initPlayerBoard() {        
-        this.playerController.addPropertyChangeListener(this.propertyChangeListener);        
-    }
-    
-     /**
-     * Activate the end game animation
-     * @param playerWins - true if the player has won the game, false otherwise
-     */
-    private void runEndGame(Boolean playerWins) {        
-        this.endGame = new EndGame(playerWins);
-        initEndGame();   
-        
-        /* Waits for 2.5s before displaying the end game animation, in order to see the last (piece of) ship explosion. */
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        this.endGame.start(); 
-    }
-    
-  
-}
+   }

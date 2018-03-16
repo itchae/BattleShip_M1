@@ -57,63 +57,31 @@ public abstract class FXML_BordUIController  {
     }
     
     protected abstract void add (CellUI c , int row , int column);
+    protected abstract GridPane getRoot();
+     public DoubleProperty layoutYProperty(){
+        return this.getRoot().layoutYProperty();
+     }
+     
+      public DoubleProperty layoutXProperty(){
+        return this.getRoot().layoutXProperty();
+      }
     
-    public BoardModel getBoardModel(){
-        return this.boardModel;
-    }
-     /**
-     * Initializes the cells listener
-     * @see BoardUI#BoardUI
-     */
-    protected final void initCellUIListener() {
-        this.propertyChangeListener = (PropertyChangeEvent propertyChangeEvent) -> {
-            initSpecificCellUIListener(propertyChangeEvent);
-        };
-    }
     
     /**
-     * Manages notification sent by CellUIs
-     * @param propertyChangeEvent - event to deal with 
+     * Searches for the CellUI associated with a CellModel
+     * @param cellModel - associated CellModel 
+     * @return the associated CellUI if found, null otherwise
      */
-    protected abstract void initSpecificCellUIListener(PropertyChangeEvent propertyChangeEvent);
-    
-    
-    /*=========================================================================*/
-    /* Private methods                                                         */       
-    /*=========================================================================*/
-    
-    /**
-     * Initializes contents
-     * @param isBound - determines whether CellUI's styles are bound to cell models'
-     * @see BoardUI()
-     */
-    private void initCells(Boolean isBound) {
-        for (int row = 0; row < BoardModel.BOARD_SIZE; row++) {        
-            for (int column = 0; column < BoardModel.BOARD_SIZE; column++) {
-                CellUI cellUI = new CellUI(this.boardModel.getCellModel(row, column), isBound);                
-                add(cellUI, row, column);
-                cellUI.addPropertyChangeListener(this.propertyChangeListener);
+    public CellUI findCellUIFromModel(CellModel cellModel) {
+        for (Node cellUI :  this.getRoot().getChildren()) {
+            if (((CellUI)(cellUI)).getCellModel() == cellModel) {
+                return (CellUI) cellUI;
             }
         }
-        /* To ensure that both missileDestination and missileSource are never null, 
-            set their default value as the first cell of this. */
-        this.missileDestination = this.missileSource = (CellUI) this.getRoot().getChildren().get(0);
+        return null;
     }
-    
-    protected abstract GridPane getRoot();
-    
+  
     /**
-     * Initializes the different cell spans
-     * @see BoardUI()
-     */
-    private void initCellSpans() {
-        this.northCellSpan = new ArrayList<>();
-        this.westCellSpan = new ArrayList<>();
-        this.southCellSpan = new ArrayList<>();
-        this.eastCellSpan = new ArrayList<>();        
-    }
-    
-        /**
      * Checks the presence of a ship, depending on a given type
      * @param cellType - ship type
      * @return true if a ship has been placed on the board
@@ -127,7 +95,53 @@ public abstract class FXML_BordUIController  {
         return this.boardModel.isCellTypeInside(cellType);        
     }
     
-     /**
+    
+    /*
+     * Property Change Listeners management
+     */
+    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        this.pcsListeners.addPropertyChangeListener(propertyChangeListener);
+    }
+    
+    public void removePropertyChangeListener (PropertyChangeListener propertyChangeListener) {
+        this.pcsListeners.removePropertyChangeListener(propertyChangeListener);
+    }
+    
+    
+    /*
+     * Getters / setters
+     */
+    
+    public BoardModel getBoardModel() {
+        return this.boardModel;
+    }
+    
+    public String getName() {
+        return this.name;
+    }
+    
+    public CellUI getMissileDestination() {
+        return this.missileDestination;
+    }
+    
+    public void setMissileDestination(CellUI cellUI) {
+        this.missileDestination = cellUI;
+    }
+    
+    public CellUI getMissileSource() {
+        return this.missileSource;
+    }
+    
+    public void setMissileSource(CellUI cellUI) {
+        this.missileSource = cellUI;
+    }
+
+    
+    /*=========================================================================*/
+    /* Protected methods                                                         */       
+    /*=========================================================================*/
+    
+    /**
      * Computes a set of adjacent cells along a given direction
      * @param cellModel - first cell of the span
      * @param direction - direction to follow to get successive cells
@@ -181,56 +195,54 @@ public abstract class FXML_BordUIController  {
         return cellSpan;
     }
     
-    public CellUI getMissileDestination() {
-        return this.missileDestination;
-    }
-    
-    public void setMissileDestination(CellUI cellUI) {
-        this.missileDestination = cellUI;
-    }
-    
-    public CellUI getMissileSource() {
-        return this.missileSource;
-    }
-    
-    public void setMissileSource(CellUI cellUI) {
-        this.missileSource = cellUI;
+    /**
+     * Initializes the cells listener
+     * @see BoardUI#BoardUI
+     */
+    protected final void initCellUIListener() {
+        this.propertyChangeListener = (PropertyChangeEvent propertyChangeEvent) -> {
+            initSpecificCellUIListener(propertyChangeEvent);
+        };
     }
     
     /**
-     * Searches for the CellUI associated with a CellModel
-     * @param cellModel - associated CellModel 
-     * @return the associated CellUI if found, null otherwise
+     * Manages notification sent by CellUIs
+     * @param propertyChangeEvent - event to deal with 
      */
-    public CellUI findCellUIFromModel(CellModel cellModel) {
-        for (Node cellUI :  this.getRoot().getChildren()) {
-            if (((CellUI)(cellUI)).getCellModel() == cellModel) {
-                return (CellUI) cellUI;
+    protected abstract void initSpecificCellUIListener(PropertyChangeEvent propertyChangeEvent);
+    
+    
+    /*=========================================================================*/
+    /* Private methods                                                         */       
+    /*=========================================================================*/
+    
+    /**
+     * Initializes contents
+     * @param isBound - determines whether CellUI's styles are bound to cell models'
+     * @see BoardUI()
+     */
+    private void initCells(Boolean isBound) {
+        for (int row = 0; row < BoardModel.BOARD_SIZE; row++) {        
+            for (int column = 0; column < BoardModel.BOARD_SIZE; column++) {
+                CellUI cellUI = new CellUI(this.boardModel.getCellModel(row, column), isBound);                
+                add(cellUI, row, column);
+                cellUI.addPropertyChangeListener(this.propertyChangeListener);
             }
         }
-        return null;
+        /* To ensure that both missileDestination and missileSource are never null, 
+            set their default value as the first cell of this. */
+        this.missileDestination = this.missileSource = (CellUI) this.getRoot().getChildren().get(0);
     }
-      /*
-     * Property Change Listeners management
+    
+    /**
+     * Initializes the different cell spans
+     * @see BoardUI()
      */
-    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-        this.pcsListeners.addPropertyChangeListener(propertyChangeListener);
+    private void initCellSpans() {
+        this.northCellSpan = new ArrayList<>();
+        this.westCellSpan = new ArrayList<>();
+        this.southCellSpan = new ArrayList<>();
+        this.eastCellSpan = new ArrayList<>();        
     }
     
-    public void removePropertyChangeListener (PropertyChangeListener propertyChangeListener) {
-        this.pcsListeners.removePropertyChangeListener(propertyChangeListener);
-    }
-    
-    public DoubleProperty layoutYProperty(){
-        return this.getRoot().layoutYProperty();
-    }
-    
-     public DoubleProperty layoutXProperty(){
-        return this.getRoot().layoutXProperty();
-    }
-     
-      public String getName() {
-        return this.name;
-    }
-
 }

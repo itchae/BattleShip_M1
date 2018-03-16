@@ -88,22 +88,9 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
     protected  void add (CellUI c , int row , int column){
         root.add(c,row,column);
     }
-     /**
-     * Manages notification sent by CellUIs
-     * @param propertyChangeEvent - event to deal with
-     */  
-    @Override
-    protected void initSpecificCellUIListener(PropertyChangeEvent propertyChangeEvent) {
-        String property = propertyChangeEvent.getPropertyName();
-        //this.missileDestination = (CellUI) propertyChangeEvent.getSource();
-
-        /* Propagates an event triggered by a CellUI */
-        if ("cellUIUnknownOrShip".equals(property)) {
-            this.pcsListeners.firePropertyChange("boardUIComputerUnknownOrShip", null, this);
-        }   
-    }
     
-       /**
+    //leurs codes
+    /**
      * Computes the location of the player cell targeted by a missile
      * The method to find this cell depends on the computer skill level
      * @return - thecell coordinates
@@ -126,6 +113,146 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
         }
         return coord2D;
     }
+    
+    
+    /**
+     * Automatically places a whole fleet of ships on this board,
+     * at random locations
+     */
+    public void placeShipsOnBoardAtRandom() {
+        CellModel cellModel;
+        int shipSize;
+        ArrayList<CellModel> randomCellSpan;
+        Boolean nextShip;
+        Boolean validLocation;
+        
+        for (Ship ship : this.boardModel.getFleet().getShips()) {
+            nextShip = false;            
+            
+            while (! nextShip) {
+                /* Chooses both random free cell and direction */                
+                cellModel = this.boardModel.randomCell(this.boardModel.getDefaultCellType(), true);
+                Direction direction = randomDirection();
+                shipSize = ship.getSize();
+                randomCellSpan = cellSpan(cellModel, direction, shipSize);
+                
+                /* If there were not enough room to fill randomCellSpan, try again. */
+                if (randomCellSpan.isEmpty()) {
+                    continue;
+                }
+                
+                /* Checks whether all cells in randomCellSpan are available for placing the ship */
+                validLocation = true;
+                for (CellModel currentCell : randomCellSpan) {            
+                    validLocation = ((currentCell.getCellType() == this.boardModel.getDefaultCellType()) || 
+                        (currentCell.getCellType() == CellType.AVAILABLE_LOCATION));
+                    if (! validLocation) {
+                        break;
+                    }
+                }
+        
+                /* Places the ship on the board */
+                if (validLocation) {           
+                    CellType cellType = CellType.shipTypeToCellType(ship.getShipType());
+                    
+                    for (CellModel currentCell : randomCellSpan) {            
+                       currentCell.setCellType(cellType);
+                    }                    
+                    nextShip = true;
+                }
+                else {
+                    nextShip = false;
+                }
+            }
+        }    
+    }
+
+    /**
+     * Each time an adverse (player) ship has been destroyed, the number
+     * of target ships decreases
+     * @param shipDescription - name of the last adverse destroyed ship
+     */
+    public void updateInfoAboutAdverseDestroyedShip(String shipDescription) {
+        if (this.adverseShipInformation.containsKey(shipDescription)) {
+            this.adverseShipInformation.remove(shipDescription);
+        }
+    }
+    
+    /*
+     * Getters / Setters
+     */
+    
+    public CellModel getLastCellTargeted() {
+        return this.lastCellTargeted;
+    }
+    
+    /*=========================================================================*/
+    /* Protected methods                                                         */       
+    /*=========================================================================*/
+    
+    /**
+     * Manages notification sent by CellUIs
+     * @param propertyChangeEvent - event to deal with
+     */  
+    @Override
+    protected void initSpecificCellUIListener(PropertyChangeEvent propertyChangeEvent) {
+        String property = propertyChangeEvent.getPropertyName();
+        this.missileDestination = (CellUI) propertyChangeEvent.getSource();
+
+        /* Propagates an event triggered by a CellUI */
+        if ("cellUIUnknownOrShip".equals(property)) {
+            this.pcsListeners.firePropertyChange("boardUIComputerUnknownOrShip", null, this);
+        }   
+    }
+
+    
+    /*=========================================================================*/
+    /* Private methods                                                         */       
+    /*=========================================================================*/
+    
+    /**
+     * Create and fill a set of cells amongst which the next missile future target
+     * will be selected, in the medium skill level.
+     * A cell is inserted in the set if it is at the center of a span 
+     * (horizontal and/or vertical) of UNKNOWN cells
+     * @param size - size of the span
+     * @pre size > 1
+     * @return the set of cells
+     * @see findMissileDestinationCellMedium()
+     */
+    private ArrayList<CellModel> collectCandidatesForFutureTarget(int size) {
+        ArrayList<CellModel> candidateCells = new ArrayList<>();
+        
+        /* Each cell of the copy board is scanned */
+        for (int row = 0; row < BoardModel.BOARD_SIZE; row++) {
+            for (int column = 0; column < BoardModel.BOARD_SIZE; column++) {
+                CellModel cellModel = this.playerBoardModelCopy.getCellModel(row, column);
+                if (cellModel.getCellType() == CellType.UNKNOWN) {
+                    if (IsCellCenterOfUnknownSpan(cellModel, size)) {
+                        candidateCells.add(cellModel);
+                    }
+                }   
+            }     
+        }
+        return candidateCells;
+    }
+    
+    /**
+     * Fill a set with cells adjacent (along cardinal directions) to a specific cell
+     * @param cellModel - cell centering adjacent cells
+     * @return the set of adjacent cells
+     * @see findMissileDestinationCellExpert()
+     */
+    private ArrayList<CellModel> findAdjacentCells(CellModel cellModel) {
+        ArrayList<CellModel> adjacentCellsList = new ArrayList<CellModel>();
+        adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.NORTH));
+        adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.WEST));
+        adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.SOUTH));
+        adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.EAST));
+
+        return adjacentCellsList;
+    }
+    
     
     /**
      * Computes the location of the player cell targeted by a missile
@@ -229,7 +356,6 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
         }
     }
    
-    
     /** 
      * Select the future missile target
      * @return - the target cell coordinates 
@@ -247,76 +373,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
         }    
     }
     
-    /**
-     * @return the CellModel associated with the best score, null if there is no CellModel available
-     * If not null, the selectedCellModel is removed from the set of future targets
-     * @see findMissileDestinationFromFutureTargets()
-     */
-    private CellModel selectAndRemoveFutureTarget() {
-        if (this.futureTargets.isEmpty()) {
-           return null;
-        } 
-        else {
-            Integer maxScore = -1 ;
-            CellModel selectedCellModel = null;
-
-            for (CellModel cellModel : this.futureTargets.keySet()) {
-                if (this.futureTargets.get(cellModel) > maxScore) {
-                    maxScore = this.futureTargets.get(cellModel);
-                    selectedCellModel = cellModel;
-                }
-            }
-            if (selectedCellModel != null) {
-                this.futureTargets.remove(selectedCellModel);
-            }
-            return selectedCellModel;
-        }
-    }
     
-    /**
-     * Initialize adverseShipInformation
-     * We assume that the adverse fleet is composed of the same ships as 
-     * the computer's fleet.
-     * @param fleet - set of ships to deal with
-     * @see BoardUIComputer()
-     */
-    private void initAdverseShipInformation() {
-        Fleet fleet = this.boardModel.getFleet();
-        for (Ship ship  : fleet.getShips()) {
-            this.adverseShipInformation.put(ship.getDescription(),ship.getSize());
-        }
-    }
-    
-     /**
-     * Fill a set with cells adjacent (along cardinal directions) to a specific cell
-     * @param cellModel - cell centering adjacent cells
-     * @return the set of adjacent cells
-     * @see findMissileDestinationCellExpert()
-     */
-    private ArrayList<CellModel> findAdjacentCells(CellModel cellModel) {
-        ArrayList<CellModel> adjacentCellsList = new ArrayList<CellModel>();
-        adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.NORTH));
-        adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.WEST));
-        adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.SOUTH));
-        adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.EAST));
-
-        return adjacentCellsList;
-    }
-    
-      /**
-     * Add a CellModel as a future target or increases it score if it is already a future target     * 
-     * @see findMissileDestinationCellExpert()
-     */
-    private void updateScoreOfFutureTarget(CellModel cellModel) {
-        if (this.futureTargets.containsKey(cellModel)) {
-            this.futureTargets.replace(cellModel, this.futureTargets.get(cellModel) + 1);
-        }
-        else {
-            this.futureTargets.put(cellModel, 1);
-        }
-    }
-    
-     
     /**
      * In order to increase the odds to find a cell belonging to the lat ship hit,
      * the set adjacentCells of cells adjacent to the one representing the ship is provided,
@@ -342,7 +399,8 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
         return oppositeCellModel;
     }
     
-     /**
+    
+    /**
      * Search for the size of the biggest adverse ship that has not been
      * already destroyed
      * @return the biggest size
@@ -360,30 +418,17 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
     }
     
     /**
-     * Create and fill a set of cells amongst which the next missile future target
-     * will be selected, in the medium skill level.
-     * A cell is inserted in the set if it is at the center of a span 
-     * (horizontal and/or vertical) of UNKNOWN cells
-     * @param size - size of the span
-     * @pre size > 1
-     * @return the set of cells
-     * @see findMissileDestinationCellMedium()
+     * Initialize adverseShipInformation
+     * We assume that the adverse fleet is composed of the same ships as 
+     * the computer's fleet.
+     * @param fleet - set of ships to deal with
+     * @see BoardUIComputer()
      */
-    private ArrayList<CellModel> collectCandidatesForFutureTarget(int size) {
-        ArrayList<CellModel> candidateCells = new ArrayList<>();
-        
-        /* Each cell of the copy board is scanned */
-        for (int row = 0; row < BoardModel.BOARD_SIZE; row++) {
-            for (int column = 0; column < BoardModel.BOARD_SIZE; column++) {
-                CellModel cellModel = this.playerBoardModelCopy.getCellModel(row, column);
-                if (cellModel.getCellType() == CellType.UNKNOWN) {
-                    if (IsCellCenterOfUnknownSpan(cellModel, size)) {
-                        candidateCells.add(cellModel);
-                    }
-                }   
-            }     
+    private void initAdverseShipInformation() {
+        Fleet fleet = this.boardModel.getFleet();
+        for (Ship ship  : fleet.getShips()) {
+            this.adverseShipInformation.put(ship.getDescription(),ship.getSize());
         }
-        return candidateCells;
     }
     
     /**
@@ -441,74 +486,6 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
         return true;
     }
     
-     
-    public CellModel getLastCellTargeted() {
-        return this.lastCellTargeted;
-    }
-    
-     /**
-     * Each time an adverse (player) ship has been destroyed, the number
-     * of target ships decreases
-     * @param shipDescription - name of the last adverse destroyed ship
-     */
-    public void updateInfoAboutAdverseDestroyedShip(String shipDescription) {
-        if (this.adverseShipInformation.containsKey(shipDescription)) {
-            this.adverseShipInformation.remove(shipDescription);
-        }
-    }
-    
-    /**
-     * Automatically places a whole fleet of ships on this board,
-     * at random locations
-     */
-    public void placeShipsOnBoardAtRandom() {
-        CellModel cellModel;
-        int shipSize;
-        ArrayList<CellModel> randomCellSpan;
-        Boolean nextShip;
-        Boolean validLocation;
-        
-        for (Ship ship : this.boardModel.getFleet().getShips()) {
-            nextShip = false;            
-            
-            while (! nextShip) {
-                /* Chooses both random free cell and direction */                
-                cellModel = this.boardModel.randomCell(this.boardModel.getDefaultCellType(), true);
-                Direction direction = randomDirection();
-                shipSize = ship.getSize();
-                randomCellSpan = cellSpan(cellModel, direction, shipSize);
-                
-                /* If there were not enough room to fill randomCellSpan, try again. */
-                if (randomCellSpan.isEmpty()) {
-                    continue;
-                }
-                
-                /* Checks whether all cells in randomCellSpan are available for placing the ship */
-                validLocation = true;
-                for (CellModel currentCell : randomCellSpan) {            
-                    validLocation = ((currentCell.getCellType() == this.boardModel.getDefaultCellType()) || 
-                        (currentCell.getCellType() == CellType.AVAILABLE_LOCATION));
-                    if (! validLocation) {
-                        break;
-                    }
-                }
-        
-                /* Places the ship on the board */
-                if (validLocation) {           
-                    CellType cellType = CellType.shipTypeToCellType(ship.getShipType());
-                    
-                    for (CellModel currentCell : randomCellSpan) {            
-                       currentCell.setCellType(cellType);
-                    }                    
-                    nextShip = true;
-                }
-                else {
-                    nextShip = false;
-                }
-            }
-        }    
-    }
-
     /**
      * @return a random Direction
      * @see placeShipsOnBoardAtRandom()
@@ -535,5 +512,45 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
                 break;
         }
         return direction;
+    }
+    
+    /**
+     * @return the CellModel associated with the best score, null if there is no CellModel available
+     * If not null, the selectedCellModel is removed from the set of future targets
+     * @see findMissileDestinationFromFutureTargets()
+     */
+    private CellModel selectAndRemoveFutureTarget() {
+        if (this.futureTargets.isEmpty()) {
+           return null;
+        } 
+        else {
+            Integer maxScore = -1 ;
+            CellModel selectedCellModel = null;
+
+            for (CellModel cellModel : this.futureTargets.keySet()) {
+                if (this.futureTargets.get(cellModel) > maxScore) {
+                    maxScore = this.futureTargets.get(cellModel);
+                    selectedCellModel = cellModel;
+                }
+            }
+            if (selectedCellModel != null) {
+                this.futureTargets.remove(selectedCellModel);
+            }
+            return selectedCellModel;
+        }
+    }
+    
+    
+    /**
+     * Add a CellModel as a future target or increases it score if it is already a future target     * 
+     * @see findMissileDestinationCellExpert()
+     */
+    private void updateScoreOfFutureTarget(CellModel cellModel) {
+        if (this.futureTargets.containsKey(cellModel)) {
+            this.futureTargets.replace(cellModel, this.futureTargets.get(cellModel) + 1);
+        }
+        else {
+            this.futureTargets.put(cellModel, 1);
+        }
     }
 }
