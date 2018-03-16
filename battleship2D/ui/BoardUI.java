@@ -242,5 +242,7 @@ public abstract class BoardUI extends GridPane {
         this.southCellSpan = new ArrayList<>();
         this.eastCellSpan = new ArrayList<>();        
     }
+    
+    
 }
 

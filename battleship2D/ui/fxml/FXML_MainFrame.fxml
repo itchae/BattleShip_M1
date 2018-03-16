@@ -20,7 +20,7 @@
             <bottom>
                 <VBox  fx:id="bottom">
                     <fx:include source="FXML_ShipInsertion.fxml"  fx:id="shipInsertion"/>
-                    <fx:include source="FXML_Messages.fxml"  fx:id="msg"/>
+                    <fx:include source="FXML_Messages.fxml"  fx:id="msg"/>   
                 </VBox>
             </bottom> 
                     

@@ -21,13 +21,19 @@ public class FXML_MessagesController implements Initializable {
 
     @FXML
     private ScrollPane root;
+    @FXML
+    private TextArea text;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.root.setFitToHeight(true);
+      this.root.setFitToHeight(true);
        root.setFitToWidth(true);
-    }    
+    }  
+    
+    public void append (String m){
+        text.appendText(m);
+    }
     
 }
