@@ -16,7 +16,6 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -24,13 +23,13 @@ import javafx.util.Duration;
  * FXML Controller class
  *
  */
-public class FXML_EndGameController extends Region implements Initializable {
+public class FXML_EndGameController implements Initializable {
     /*=========================================================================*/
     /* Members                                                                 */       
     /*=========================================================================*/
     
     /** Animation images */    
-    private final ImageView winnerImage, winsImage;
+    //private final ImageView winnerImage, winsImage;
 
     /** Lapse time between two frame iterations */
     private final int duration;
@@ -88,7 +87,7 @@ public class FXML_EndGameController extends Region implements Initializable {
         super();
         this.duration = 80;
         this.scaleRatioProparty = new SimpleDoubleProperty();
-        this.winnerImage = new ImageView();
+        //this.winnerImage = new ImageView();
                 
         if (playerWins) {
             this.player.setImage(new Image("battleship2D/pictures/player.png"));
@@ -98,7 +97,7 @@ public class FXML_EndGameController extends Region implements Initializable {
         }
         initWinner();    
         
-        this.winsImage = new ImageView(getClass().getResource("/battleship2D/pictures/wins.png").toExternalForm());                
+        //this.winsImage = new ImageView(getClass().getResource("/battleship2D/pictures/wins.png").toExternalForm());                
         initWins();
         
         this.timeline = new Timeline();
@@ -141,26 +140,30 @@ public class FXML_EndGameController extends Region implements Initializable {
      * Initializes winnerImage's properties 
      * @see EndGame()
      */
-    private void initWinner() {        
-        this.winnerImage.fitHeightProperty().bind(this.prefHeightProperty().divide(3));
+    private void initWinner() {
+        this.player.setFitHeight(0);
+        this.player.setFitWidth(0);
+        /*this.winnerImage.fitHeightProperty().bind(this.prefHeightProperty().divide(3));
         this.winnerImage.fitWidthProperty().bind(this.prefWidthProperty().divide(1.5));
         this.winnerImage.setFocusTraversable(false); 
         this.winnerImage.scaleXProperty().bind(this.scaleRatioProparty);
         this.winnerImage.scaleYProperty().bind(this.scaleRatioProparty);
-        getChildren().add(this.winnerImage);
+        getChildren().add(this.winnerImage);*/
     }
     
     /** 
      * Initializes winsImage's properties 
      * @see EndGame()
      */
-    private void initWins() {        
-        this.winsImage.fitHeightProperty().bind(this.prefHeightProperty().divide(3));
+    private void initWins() {
+        this.win.setFitHeight(0);
+        this.win.setFitWidth(0);
+        /*this.winsImage.fitHeightProperty().bind(this.prefHeightProperty().divide(3));
         this.winsImage.fitWidthProperty().bind(this.prefWidthProperty().divide(2));
         this.winsImage.setFocusTraversable(false);     
         this.winsImage.scaleXProperty().bind(this.scaleRatioProparty);
         this.winsImage.scaleYProperty().bind(this.scaleRatioProparty);
-        getChildren().add(this.winsImage);
+        getChildren().add(this.winsImage);*/
     }
     
     /**
@@ -168,12 +171,12 @@ public class FXML_EndGameController extends Region implements Initializable {
      * @see initTimeline()
      */
     private void runAnimation() {                
-        this.winnerImage.setTranslateX(this.getWidth()/2 - this.winnerImage.getFitWidth()/2);
-        this.winnerImage.setTranslateY(this.getHeight()*0.3 - this.winnerImage.getFitHeight()/2);
+        this.player.setTranslateX(this.player.getFitWidth()/2 - this.player.getFitWidth()/2);
+        this.player.setTranslateY(this.player.getFitHeight()*0.3 - this.player.getFitHeight()/2);
         
         
-        this.winsImage.setTranslateX(this.getWidth()/2 - this.winsImage.getFitWidth()/2);
-        this.winsImage.setTranslateY(this.getHeight()*0.75 - this.winsImage.getFitHeight()/2);
+        this.win.setTranslateX(this.win.getFitWidth()/2 - this.win.getFitWidth()/2);
+        this.win.setTranslateY(this.win.getFitHeight()*0.75 - this.win.getFitHeight()/2);
         
         if (this.scaleRatioProparty.getValue() <= 1.0) {
             this.scaleRatioProparty.setValue(this.scaleRatioProparty.getValue() + 0.1);
