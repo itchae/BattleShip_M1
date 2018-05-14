@@ -79,7 +79,7 @@ public class FXML_MainFrameController implements Initializable {
     //private final EndGame endGame;
     private EndGame endGame;
     /** Missiles sent by boards */
-    private  Missile missile;
+    private  FXML_MissileController missile;
     
     /** Explosion image and animation */
     private  Explosion explosion; 
@@ -103,7 +103,7 @@ public class FXML_MainFrameController implements Initializable {
         
         //init    
         
-        this.missile = new Missile();       
+        this.missile = new FXML_MissileController();       
         this.explosion = new Explosion(20,20);         
         this.endGame = null;
         initRoot();
