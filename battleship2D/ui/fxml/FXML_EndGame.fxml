@@ -8,22 +8,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="borderPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_EndGameController">
-    <center>
-        <VBox fx:id="winnerDisplay">
+<AnchorPane fx:id="root" prefHeight="400.0" prefWidth="600.0" stylesheets="@../fxmlCSS/fxml_endgame.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_EndGameController">
+    <children>
+        <StackPane AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+                <VBox fx:id="winnerDisplay" StackPane.alignment="CENTER" alignment="CENTER">
 
-            <ImageView fx:id="winnerName" >
-                <image>
-                  <Image url="battleship2D/pictures/player.png" />
-                </image>
-            </ImageView>
+                    <ImageView fx:id="winnerName" >
+                        <Image>
+                            
+                        </Image>
+                    </ImageView>
 
-            <ImageView fx:id="win">
-              <image>
-                <Image url="battleship2D/pictures/wins.png" />
-              </image>
-            </ImageView>
+                    <ImageView fx:id="win">
+                      <image>
+                        <Image url="/battleship2D/pictures/wins.png" />
+                      </image>
+                    </ImageView>
 
-        </VBox>
-    </center>
-</BorderPane>
+                </VBox>
+        </StackPane>
+    </children>
+</AnchorPane>

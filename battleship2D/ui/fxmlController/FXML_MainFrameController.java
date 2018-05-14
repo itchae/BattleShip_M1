@@ -27,14 +27,20 @@ import battleship2D.model.Coord2D;
 import battleship2D.model.Direction;
 import battleship2D.model.Fleet;
 import battleship2D.model.Ship;
-import battleship2D.ui.EndGame;
 import battleship2D.ui.Explosion;
 import battleship2D.ui.MainFrame;
 import battleship2D.ui.Missile;
+import battleship2D.ui.fxml.FXML_BattleShip2D;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 /**
  * FXML Controller class
  *
@@ -53,16 +59,28 @@ public class FXML_MainFrameController implements Initializable {
     
     @FXML
     private VBox bottom;
+    
     @FXML
     private FXML_ShipInsertionController shipInsertionController;
     
     @FXML
     private GridPane player;
+    
+    @FXML
+    private FXML_EndGameController endGameController;
+    
+    @FXML
+    private Button instantwin;
+    
+    @FXML
+    private Button instantlose;
+  
     @FXML
     private FXML_BordUIPlayerController playerController;
     
     @FXML
     private GridPane computer;
+    
     @FXML
     private FXML_BordUIComputerController computerController;
     
@@ -72,12 +90,17 @@ public class FXML_MainFrameController implements Initializable {
     
     /** Current game stage */
     private GameStages gameStage;
+    
     /** This class listens for each of its boards and the missile class */
     private PropertyChangeListener propertyChangeListener;
+    
     /** Opponents turns */
     private Turn turn;/** End game animation */
     //private final EndGame endGame;
-    private EndGame endGame;
+    
+    @FXML
+    private BorderPane endGame;
+    
     /** Missiles sent by boards */
     private  Missile missile;
     
@@ -117,8 +140,19 @@ public class FXML_MainFrameController implements Initializable {
         this.missileDestX = new SimpleDoubleProperty(0);
         this.missileDestY = new SimpleDoubleProperty(0);
         this.turn = Turn.PLAYER;
-    } 
+    }
     
+    @FXML
+    private void win(){
+	FXML_BattleShip2D.setPlayerWin(true);
+	initEndGame();
+    }
+    
+    @FXML
+    private void lose(){
+	FXML_BattleShip2D.setPlayerWin(false);
+	initEndGame();
+    }
     //leurs codes
      /**
      * Updates the stage of the game
@@ -321,11 +355,21 @@ public class FXML_MainFrameController implements Initializable {
      * Initializes the animation played when the games ends
      * @see MainFrame()
      */
-    private void initEndGame() {        
+    private void initEndGame() {
+	URL url = getClass().getResource("./fxml/FXML_EndGame.fxml");
+	System.out.println(url.getPath());
+	FXMLLoader fxmlLoader = new FXMLLoader(url);
+	try {
+	    root = (AnchorPane) (Pane) fxmlLoader.load();
+
+	} catch (IOException ex) {
+	    Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+	}
+
         this.endGame.prefWidthProperty().bind(this.borderPane.widthProperty()); 
         this.endGame.prefHeightProperty().bind(this.borderPane.heightProperty());
-        this.endGame.setVisible(false);
-        this.root.getChildren().addAll(this.endGame);
+       // this.endGame.setVisible(false);
+       // this.root.getChildren().addAll(this.endGame);
     }
     
     /**
@@ -503,7 +547,8 @@ public class FXML_MainFrameController implements Initializable {
      * @param playerWins - true if the player has won the game, false otherwise
      */
     private void runEndGame(Boolean playerWins) {        
-        this.endGame = new EndGame(playerWins);
+       // this.endGame = new EndGame(playerWins);
+       FXML_BattleShip2D.setPlayerWin(playerWins);
         initEndGame();   
         
         /* Waits for 2.5s before displaying the end game animation, in order to see the last (piece of) ship explosion. */
@@ -512,7 +557,9 @@ public class FXML_MainFrameController implements Initializable {
         } catch (InterruptedException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.endGame.start(); 
+        this.borderPane.setVisible(false);
+        
+        this.endGameController.start();
     }
     
     /**

@@ -28,16 +28,20 @@ public class FXML_BattleShip2D extends Application   {
     /** Game manager */    
     private static Pane root;
    
+    private static boolean playerWin;
     
     /*=========================================================================*/
     /* Public methods                                                          */       
     /*=========================================================================*/
+    public static void setPlayerWin(boolean bool){ FXML_BattleShip2D.playerWin = bool; }
+    
+    public static boolean getPlayerWin(){ return FXML_BattleShip2D.playerWin; }
     
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
       // Localisation du fichier FXML.
-      final URL url = getClass().getResource("./FXML_MainFrame.fxml");
+      final URL url = getClass().getResource("FXML_MainFrame.fxml");
       // Création du loader.
       final FXMLLoader fxmlLoader = new FXMLLoader(url);
       // Chargement du FXML.
@@ -51,10 +55,11 @@ public class FXML_BattleShip2D extends Application   {
       System.err.println("Erreur au chargement: " + ex);
     }   
         
-       
+       if (root != null){
         Scene scene = new Scene(FXML_BattleShip2D.root, 900,600);
         primaryStage.setScene(scene);
-        primaryStage.show();        
+        primaryStage.show();  
+       }
     }
     
 

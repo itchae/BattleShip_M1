@@ -17,7 +17,13 @@
                     <fx:include source="FXML_BordUIPlayer.fxml"  fx:id="player"/>
                     <fx:include source="FXML_BordUIComputer.fxml"  fx:id="computer"/>
                 </HBox>
-            </center>   
+            </center>
+            <right>
+                <HBox  fx:id="right">
+                    <Button text="win" fx:id="instantwin" onAction="#win"/>
+                    <Button text="lose" fx:id="instantlose" onAction="#lose"/>
+                </HBox>
+            </right>
             <bottom>
                 <VBox  fx:id="bottom">
                     <fx:include source="FXML_ShipInsertion.fxml"  fx:id="shipInsertion"/>

@@ -1,5 +1,6 @@
 package battleship2D.ui.fxmlController;
 
+import battleship2D.ui.fxml.FXML_BattleShip2D;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
@@ -32,78 +33,52 @@ public class FXML_EndGameController implements Initializable {
     //private final ImageView winnerImage, winsImage;
 
     /** Lapse time between two frame iterations */
-    private final int duration;
+    private  int duration;
     
     /** Dynamic scaling ration to make image appear */
-    private final SimpleDoubleProperty scaleRatioProparty;
+    private  SimpleDoubleProperty scaleRatioProparty;
     
     /** Animation player */
-    private final Timeline timeline;
+    private  Timeline timeline;
     
     
-    @FXML
-    private BorderPane borderPane;
     
     @FXML
-    private VBox vbox;
+    private VBox winnerDisplay;
     
     @FXML
     private ImageView win;
     
     @FXML
-    private ImageView player;
+    private ImageView winnerName;
     
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //Get the images to put on the final screen
-        Image winner_img = new Image("battleship2D/pictures/player.png");
-        Image win_logo = new Image("battleship2D/pictures/wins.png");
-        Image bckground_pane_img = new Image("battleship2D/pictures/battleship-endgame.png");
-        
-        this.player.setImage(winner_img);
-        this.win.setImage(win_logo);
-        
-        BackgroundSize bSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false);
-
-        //Set the battleship-endgame.png picture as the background of the window
-        this.borderPane.setBackground(new Background(new BackgroundImage(bckground_pane_img,
-            BackgroundRepeat.NO_REPEAT,
-            BackgroundRepeat.NO_REPEAT,
-            BackgroundPosition.CENTER,
-            bSize)));
-
-        this.borderPane.setCenter(this.vbox);
+        if (FXML_BattleShip2D.getPlayerWin()) {
+            this.winnerName.setImage(new Image("/battleship2D/pictures/player.png"));
+        }
+        else {
+            this.winnerName.setImage(new Image("/battleship2D/pictures/computer.png"));
+        }
     }
 
      /**
      * Constructor
-     * @param playerWins - Determines whether the winner image to display represents
-     * the player (true) or the computer (false)
      */
-    public FXML_EndGameController(boolean playerWins) {    
+    public FXML_EndGameController() {    
         super();
         this.duration = 80;
         this.scaleRatioProparty = new SimpleDoubleProperty();
-        //this.winnerImage = new ImageView();
-                
-        if (playerWins) {
-            this.player.setImage(new Image("battleship2D/pictures/player.png"));
-        }
-        else {
-            this.player.setImage(new Image("battleship2D/pictures/computer.png"));
-        }
+        
         initWinner();    
         
-        //this.winsImage = new ImageView(getClass().getResource("/battleship2D/pictures/wins.png").toExternalForm());                
         initWins();
         
         this.timeline = new Timeline();
         initTimeline();
-        
-        //this.setVisible(false);
     }
     
      /**
@@ -141,8 +116,8 @@ public class FXML_EndGameController implements Initializable {
      * @see EndGame()
      */
     private void initWinner() {
-        this.player.setFitHeight(0);
-        this.player.setFitWidth(0);
+        this.winnerName.setFitHeight(0);
+        this.winnerName.setFitWidth(0);
         /*this.winnerImage.fitHeightProperty().bind(this.prefHeightProperty().divide(3));
         this.winnerImage.fitWidthProperty().bind(this.prefWidthProperty().divide(1.5));
         this.winnerImage.setFocusTraversable(false); 
@@ -171,8 +146,8 @@ public class FXML_EndGameController implements Initializable {
      * @see initTimeline()
      */
     private void runAnimation() {                
-        this.player.setTranslateX(this.player.getFitWidth()/2 - this.player.getFitWidth()/2);
-        this.player.setTranslateY(this.player.getFitHeight()*0.3 - this.player.getFitHeight()/2);
+        this.winnerName.setTranslateX(this.winnerName.getFitWidth()/2 - this.winnerName.getFitWidth()/2);
+        this.winnerName.setTranslateY(this.winnerName.getFitHeight()*0.3 - this.winnerName.getFitHeight()/2);
         
         
         this.win.setTranslateX(this.win.getFitWidth()/2 - this.win.getFitWidth()/2);
