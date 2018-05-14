@@ -31,6 +31,7 @@ import battleship2D.ui.Explosion;
 import battleship2D.ui.MainFrame;
 import battleship2D.ui.Missile;
 import battleship2D.ui.fxml.FXML_BattleShip2D;
+import static com.sun.javafx.scene.control.skin.Utils.getResource;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,7 +52,7 @@ public class FXML_MainFrameController implements Initializable {
     @FXML
     private BorderPane borderPane;
     
-    @FXML
+	@FXML
     private AnchorPane root;
     
     @FXML
@@ -68,12 +69,6 @@ public class FXML_MainFrameController implements Initializable {
     
     @FXML
     private FXML_EndGameController endGameController;
-    
-    @FXML
-    private Button instantwin;
-    
-    @FXML
-    private Button instantlose;
   
     @FXML
     private FXML_BordUIPlayerController playerController;
@@ -102,7 +97,7 @@ public class FXML_MainFrameController implements Initializable {
     private BorderPane endGame;
     
     /** Missiles sent by boards */
-    private  FXML_MissileController missile;
+    private FXML_MissileController missile;
     
     /** Explosion image and animation */
     private  Explosion explosion; 
@@ -125,8 +120,15 @@ public class FXML_MainFrameController implements Initializable {
                 false, Config.level);
         
         //init    
-        
-        this.missile = new FXML_MissileController();       
+        //this.missile = new FXML_MissileController();
+	//this.missile.setRoot(root);
+	// Création du loader.
+	final FXMLLoader fxmlLoader = new FXMLLoader(FXML_MissileController.class.getResource("/battleship2D/ui/fxml/FXML_Missile.fxml"));
+	try {
+	    root = (AnchorPane) fxmlLoader.load();
+	} catch (IOException ex) {
+	    Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+	}
         this.explosion = new Explosion(20,20);         
         this.endGame = null;
         initRoot();
@@ -356,8 +358,7 @@ public class FXML_MainFrameController implements Initializable {
      * @see MainFrame()
      */
     private void initEndGame() {
-	URL url = getClass().getResource("./fxml/FXML_EndGame.fxml");
-	System.out.println(url.getPath());
+	URL url = getClass().getResource("/battleship2D/ui/fxml/FXML_EndGame.fxml");
 	FXMLLoader fxmlLoader = new FXMLLoader(url);
 	try {
 	    root = (AnchorPane) (Pane) fxmlLoader.load();
@@ -366,8 +367,8 @@ public class FXML_MainFrameController implements Initializable {
 	    Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
 	}
 
-        this.endGame.prefWidthProperty().bind(this.borderPane.widthProperty()); 
-        this.endGame.prefHeightProperty().bind(this.borderPane.heightProperty());
+        this.root.prefWidthProperty().bind(this.borderPane.widthProperty()); 
+        this.root.prefHeightProperty().bind(this.borderPane.heightProperty());
        // this.endGame.setVisible(false);
        // this.root.getChildren().addAll(this.endGame);
     }
@@ -442,13 +443,13 @@ public class FXML_MainFrameController implements Initializable {
      * Starts the construction of all elements
      * @see MainFrame()
      */
-    private void initRoot() {       
+    private void initRoot() {
         center.prefWidthProperty().bind(root.widthProperty());
         bottom.prefWidthProperty().bind(root.widthProperty());
         bottom.maxWidthProperty().bind(root.widthProperty());
         player.prefWidthProperty().bind(root.widthProperty().divide(2));
         computer.prefWidthProperty().bind(root.widthProperty().divide(2));
-        this.root.getChildren().addAll(missile.getRoot());
+        //this.root.getChildren().addAll(this.missile.getRoot());
         this.root.getChildren().addAll(this.explosion);
     }
     

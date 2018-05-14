@@ -63,6 +63,10 @@ public class FXML_EndGameController implements Initializable {
         else {
             this.winnerName.setImage(new Image("/battleship2D/pictures/computer.png"));
         }
+        
+        initWinner();    
+        
+        initWins();
     }
 
      /**
@@ -72,10 +76,6 @@ public class FXML_EndGameController implements Initializable {
         super();
         this.duration = 80;
         this.scaleRatioProparty = new SimpleDoubleProperty();
-        
-        initWinner();    
-        
-        initWins();
         
         this.timeline = new Timeline();
         initTimeline();
@@ -116,6 +116,13 @@ public class FXML_EndGameController implements Initializable {
      * @see EndGame()
      */
     private void initWinner() {
+	if (FXML_BattleShip2D.getPlayerWin()) {
+	    Image img = new Image("/battleship2D/pictures/player.png");
+            this.winnerName.setImage(img);
+        }
+        else {
+            this.winnerName.setImage(new Image("/battleship2D/pictures/computer.png"));
+        }
         this.winnerName.setFitHeight(0);
         this.winnerName.setFitWidth(0);
         /*this.winnerImage.fitHeightProperty().bind(this.prefHeightProperty().divide(3));

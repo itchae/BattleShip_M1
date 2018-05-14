@@ -30,23 +30,21 @@ import javafx.util.Duration;
 public class FXML_MissileController implements Initializable {
 
   
-    @FXML
+    
     private ParallelTransition parallelTransition;
     
-    @FXML
+    
     private final PropertyChangeSupport pcsListeners = new PropertyChangeSupport(this);   
 
     @FXML
     private AnchorPane root;    
  
-    @FXML
-    TranslateTransition translateTransition;
-            
- 
+    
+    TranslateTransition translateTransition; 
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-       
+       init();
     }
     
     public void play() {    
@@ -74,7 +72,9 @@ public class FXML_MissileController implements Initializable {
         return this.root;
     }
     
-
+    public void setRoot(AnchorPane ap){
+	this.root = ap;
+    }
     /*=========================================================================*/
     /* Private methods                                                         */       
     /*=========================================================================*/
@@ -84,12 +84,10 @@ public class FXML_MissileController implements Initializable {
     }
     
     private void init() {
-        this.root = new AnchorPane();  
-
 	Sphere sphere = new Sphere(10);
 	initSphere(sphere);
         this.root.getChildren().addAll(sphere);
-        
+
 	ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(1));       
 	initScaleTransition(scaleTransition);							      
 	

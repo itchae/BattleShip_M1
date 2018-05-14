@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="root" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_MainFrameController">
+<AnchorPane fx:id="root" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="battleship2D.ui.fxmlController.FXML_TestController">
     <children>
         <BorderPane fx:id="borderPane" AnchorPane.topAnchor="0d" AnchorPane.bottomAnchor="0d" AnchorPane.rightAnchor="0d" AnchorPane.leftAnchor="0d">
                 <top>
@@ -27,11 +27,9 @@
                 <bottom>
                     <VBox  fx:id="bottom">
                         <fx:include source="FXML_ShipInsertion.fxml"  fx:id="shipInsertion"/>
-                        <fx:include source="FXML_Messages.fxml"  fx:id="msg"/> 
+                        <fx:include source="FXML_Messages.fxml"  fx:id="msg"/>   
                     </VBox>
                 </bottom> 
            </BorderPane> 
        </children>            
  </AnchorPane>
-        
-

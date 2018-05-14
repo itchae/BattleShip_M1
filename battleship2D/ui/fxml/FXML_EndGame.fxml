@@ -14,9 +14,7 @@
                 <VBox fx:id="winnerDisplay" StackPane.alignment="CENTER" alignment="CENTER">
 
                     <ImageView fx:id="winnerName" >
-                        <Image>
-                            
-                        </Image>
+
                     </ImageView>
 
                     <ImageView fx:id="win">
