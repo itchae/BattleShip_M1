@@ -3,6 +3,7 @@ package battleship2D.ui;
 import battleship2D.model.BoardModel;
 import battleship2D.model.BoardModelInterface;
 import battleship2D.model.CellModel;
+import battleship2D.model.CellModelInterface;
 import battleship2D.model.CellType;
 import battleship2D.model.Coord2D;
 import battleship2D.model.Direction;
@@ -32,10 +33,10 @@ public class BoardUIComputer extends BoardUI {
     /** Store a selection of cells for future targets 
      * Each CellModel is associated with an Integer representing its score for selection as the next actual target
      */
-    private final HashMap<CellModel,Integer> futureTargets;
+    private final HashMap<CellModelInterface,Integer> futureTargets;
     
     /** Store a copy the last targeted cell in the player board */
-    private CellModel lastCellTargeted;
+    private CellModelInterface lastCellTargeted;
     
     /** Store moves played against the player */
     private final BoardModelInterface playerBoardModelCopy;
@@ -101,9 +102,9 @@ public class BoardUIComputer extends BoardUI {
      * at random locations
      */
     public void placeShipsOnBoardAtRandom() {
-        CellModel cellModel;
+        CellModelInterface cellModel;
         int shipSize;
-        ArrayList<CellModel> randomCellSpan;
+        ArrayList<CellModelInterface> randomCellSpan;
         Boolean nextShip;
         Boolean validLocation;
         
@@ -124,7 +125,7 @@ public class BoardUIComputer extends BoardUI {
                 
                 /* Checks whether all cells in randomCellSpan are available for placing the ship */
                 validLocation = true;
-                for (CellModel currentCell : randomCellSpan) {            
+                for (CellModelInterface currentCell : randomCellSpan) {            
                     validLocation = ((currentCell.getCellType() == this.boardModel.getDefaultCellType()) || 
                         (currentCell.getCellType() == CellType.AVAILABLE_LOCATION));
                     if (! validLocation) {
@@ -136,7 +137,7 @@ public class BoardUIComputer extends BoardUI {
                 if (validLocation) {           
                     CellType cellType = CellType.shipTypeToCellType(ship.getShipType());
                     
-                    for (CellModel currentCell : randomCellSpan) {            
+                    for (CellModelInterface currentCell : randomCellSpan) {            
                        currentCell.setCellType(cellType);
                     }                    
                     nextShip = true;
@@ -163,7 +164,7 @@ public class BoardUIComputer extends BoardUI {
      * Getters / Setters
      */
     
-    public CellModel getLastCellTargeted() {
+    public CellModelInterface getLastCellTargeted() {
         return this.lastCellTargeted;
     }
     
@@ -201,13 +202,13 @@ public class BoardUIComputer extends BoardUI {
      * @return the set of cells
      * @see findMissileDestinationCellMedium()
      */
-    private ArrayList<CellModel> collectCandidatesForFutureTarget(int size) {
-        ArrayList<CellModel> candidateCells = new ArrayList<>();
+    private ArrayList<CellModelInterface> collectCandidatesForFutureTarget(int size) {
+        ArrayList<CellModelInterface> candidateCells = new ArrayList<>();
         
         /* Each cell of the copy board is scanned */
         for (int row = 0; row < BoardModel.BOARD_SIZE; row++) {
             for (int column = 0; column < BoardModel.BOARD_SIZE; column++) {
-                CellModel cellModel = this.playerBoardModelCopy.getCellModel(row, column);
+                CellModelInterface cellModel = this.playerBoardModelCopy.getCellModel(row, column);
                 if (cellModel.getCellType() == CellType.UNKNOWN) {
                     if (IsCellCenterOfUnknownSpan(cellModel, size)) {
                         candidateCells.add(cellModel);
@@ -224,8 +225,8 @@ public class BoardUIComputer extends BoardUI {
      * @return the set of adjacent cells
      * @see findMissileDestinationCellExpert()
      */
-    private ArrayList<CellModel> findAdjacentCells(CellModel cellModel) {
-        ArrayList<CellModel> adjacentCellsList = new ArrayList<CellModel>();
+    private ArrayList<CellModelInterface> findAdjacentCells(CellModelInterface cellModel) {
+        ArrayList<CellModelInterface> adjacentCellsList = new ArrayList<>();
         adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.NORTH));
         adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.WEST));
         adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.SOUTH));
@@ -245,7 +246,7 @@ public class BoardUIComputer extends BoardUI {
      */
     private Coord2D findMissileDestinationCellBeginner() {
         /* A non-visited cell is tagged as UNKNOWN */
-        CellModel cellModel = this.playerBoardModelCopy.randomCell(CellType.UNKNOWN, Boolean.TRUE);
+        CellModelInterface cellModel = this.playerBoardModelCopy.randomCell(CellType.UNKNOWN, Boolean.TRUE);
         if (cellModel != null) {
             this.lastCellTargeted = cellModel; 
             return this.playerBoardModelCopy.cellCoords(this.lastCellTargeted);
@@ -276,15 +277,15 @@ public class BoardUIComputer extends BoardUI {
         else { /* this.lastCellTargeted is a ship: update score of adjacent cells
                 to increase the odds to select one of them the next turn. */
             
-            ArrayList<CellModel>adjacentCells = findAdjacentCells(this.lastCellTargeted);
+            ArrayList<CellModelInterface>adjacentCells = findAdjacentCells(this.lastCellTargeted);
             
-            for (CellModel cellModel : adjacentCells) {
+            for (CellModelInterface cellModel : adjacentCells) {
                 if (cellModel != null) {
                     if (cellModel.getCellType() == CellType.UNKNOWN) {
                         updateScoreOfFutureTarget(cellModel);
                     }
                     else if (cellModel.getCellType().isAShip() || cellModel.getCellType() == CellType.HIT){
-                        CellModel oppositeCellModel = findOppositeAdjacentCell(cellModel, adjacentCells);
+                        CellModelInterface oppositeCellModel = findOppositeAdjacentCell(cellModel, adjacentCells);
                         if (oppositeCellModel != null && oppositeCellModel.getCellType() == CellType.UNKNOWN) {
                             updateScoreOfFutureTarget(oppositeCellModel);
                         }
@@ -322,13 +323,13 @@ public class BoardUIComputer extends BoardUI {
             return findMissileDestinationCellBeginner();
         }
         else {
-            ArrayList<CellModel> candidateCells = collectCandidatesForFutureTarget(largestSize);
+            ArrayList<CellModelInterface> candidateCells = collectCandidatesForFutureTarget(largestSize);
             if (candidateCells.isEmpty()) {
                 return findMissileDestinationCellBeginner();
             }
             else { /* Choose a cell randomly */
                 Random generator = new Random();
-                CellModel cellModel = candidateCells.get(generator.nextInt(candidateCells.size()));    
+                CellModelInterface cellModel = candidateCells.get(generator.nextInt(candidateCells.size()));    
     
                 this.lastCellTargeted = cellModel; 
                 candidateCells.clear();
@@ -343,7 +344,7 @@ public class BoardUIComputer extends BoardUI {
      * @see findMissileDestinationCellExpert()
      */
     private Coord2D findMissileDestinationFromFutureTargets() {
-        CellModel cellModel = selectAndRemoveFutureTarget();
+        CellModelInterface cellModel = selectAndRemoveFutureTarget();
         
         if (cellModel != null) {
             this.lastCellTargeted = cellModel;
@@ -367,8 +368,8 @@ public class BoardUIComputer extends BoardUI {
      * @return the element of adjacentCalls placed in the direction opposite to cellModel's     *
      * @see findMissileDestinationCellExpert()
      */
-    private CellModel findOppositeAdjacentCell(CellModel cellModel, ArrayList<CellModel> adjacentCells) {
-        CellModel oppositeCellModel = null;
+    private CellModelInterface findOppositeAdjacentCell(CellModelInterface cellModel, ArrayList<CellModelInterface> adjacentCells) {
+        CellModelInterface oppositeCellModel = null;
         
         /* adjacentCells has exactly 4 elements (for directions NORTH (index 0), WEST (1), SOUTH (2), EAST (3)), some may be null. */
         for (int i = 0; i < 4; i++) {
@@ -423,7 +424,7 @@ public class BoardUIComputer extends BoardUI {
      * @return true if cellModel is a valid span center, false otherwise
      * @see collectCandidateCellsForFutureTargets()
      */
-    private boolean IsCellCenterOfUnknownSpan(CellModel cellModel, int size) {
+    private boolean IsCellCenterOfUnknownSpan(CellModelInterface cellModel, int size) {
         Coord2D coord2D = this.playerBoardModelCopy.cellCoords(cellModel);
 
         if (size % 2 == 1) /* odd */ {
@@ -457,9 +458,9 @@ public class BoardUIComputer extends BoardUI {
      * @return true if a valid span exists, false otherwise
      * @see IsCellCenterOfUnknownSpan()
      */
-    private boolean isCellCenterOfUnknownSpanAlongOneDirection(CellModel cellModel, Direction direction, int spanLength) {        
+    private boolean isCellCenterOfUnknownSpanAlongOneDirection(CellModelInterface cellModel, Direction direction, int spanLength) {        
         for (int i = 1; i <= spanLength; i++) {
-            CellModel adjacentCell = this.playerBoardModelCopy.adjacentCell(cellModel, direction, i);
+            CellModelInterface adjacentCell = this.playerBoardModelCopy.adjacentCell(cellModel, direction, i);
             if (adjacentCell == null || adjacentCell.getCellType() != CellType.UNKNOWN) {
                 return false;
             }
@@ -500,15 +501,15 @@ public class BoardUIComputer extends BoardUI {
      * If not null, the selectedCellModel is removed from the set of future targets
      * @see findMissileDestinationFromFutureTargets()
      */
-    private CellModel selectAndRemoveFutureTarget() {
+    private CellModelInterface selectAndRemoveFutureTarget() {
         if (this.futureTargets.isEmpty()) {
            return null;
         } 
         else {
             Integer maxScore = -1 ;
-            CellModel selectedCellModel = null;
+            CellModelInterface selectedCellModel = null;
 
-            for (CellModel cellModel : this.futureTargets.keySet()) {
+            for (CellModelInterface cellModel : this.futureTargets.keySet()) {
                 if (this.futureTargets.get(cellModel) > maxScore) {
                     maxScore = this.futureTargets.get(cellModel);
                     selectedCellModel = cellModel;
@@ -526,7 +527,7 @@ public class BoardUIComputer extends BoardUI {
      * Add a CellModel as a future target or increases it score if it is already a future target     * 
      * @see findMissileDestinationCellExpert()
      */
-    private void updateScoreOfFutureTarget(CellModel cellModel) {
+    private void updateScoreOfFutureTarget(CellModelInterface cellModel) {
         if (this.futureTargets.containsKey(cellModel)) {
             this.futureTargets.replace(cellModel, this.futureTargets.get(cellModel) + 1);
         }

@@ -3,6 +3,7 @@ package battleship2D.ui;
 import battleship2D.model.BoardModel;
 import battleship2D.model.BoardModelInterface;
 import battleship2D.model.CellModel;
+import battleship2D.model.CellModelInterface;
 import battleship2D.model.CellType;
 import battleship2D.model.Direction;
 import java.beans.PropertyChangeEvent;
@@ -18,7 +19,7 @@ public class BoardUIPlayer extends BoardUI {
     /*=========================================================================*/
     
     /** User-selected cell span to place a ship on the board */
-    private ArrayList<CellModel> selectedCellSpan;
+    private ArrayList<CellModelInterface> selectedCellSpan;
 
     
     /*=========================================================================*/
@@ -43,10 +44,10 @@ public class BoardUIPlayer extends BoardUI {
      * @param direction direction to follow to get successive cells
      * @param shipSize ship's span
      */
-    public void availableCellSpanByDirection(CellModel cellModel,
+    public void availableCellSpanByDirection(CellModelInterface cellModel,
             Direction direction, int shipSize) {
         
-        ArrayList<CellModel> cellSpanByDirection = cellSpan(cellModel, direction, shipSize);
+        ArrayList<CellModelInterface> cellSpanByDirection = cellSpan(cellModel, direction, shipSize);
         
         /* Checks whether all cells are available for placing the ship
          Cells must match one of the following conditions:
@@ -55,7 +56,7 @@ public class BoardUIPlayer extends BoardUI {
          - cell represents the same ship as the currently selected one */
         Boolean validLocation = true;        
         
-        for (CellModel currentCell : cellSpanByDirection) {            
+        for (CellModelInterface currentCell : cellSpanByDirection) {            
             validLocation = ((currentCell.getCellType() == this.boardModel.getDefaultCellType()) || 
                     (currentCell.getCellType() == CellType.AVAILABLE_LOCATION));
             if (! validLocation) {
@@ -66,7 +67,7 @@ public class BoardUIPlayer extends BoardUI {
         /* If every cell is available for a given direction, highlight those cells */
 		/* cellSpanByDirection.size() == shipSize iif the span does not go beyond the 				board along the given direction */
         if (validLocation && cellSpanByDirection.size() == shipSize) {           
-            for (CellModel currentCell : cellSpanByDirection) {            
+            for (CellModelInterface currentCell : cellSpanByDirection) {            
                 currentCell.setCellType(CellType.AVAILABLE_LOCATION);
             }
         }
@@ -95,7 +96,7 @@ public class BoardUIPlayer extends BoardUI {
      */
     public void placeShipOnBoard(CellType cellType) {
         if (this.selectedCellSpan != null) {
-            for (CellModel cellModel : this.selectedCellSpan) {
+            for (CellModelInterface cellModel : this.selectedCellSpan) {
                 cellModel.setCellType(cellType);
             }
         }
@@ -126,7 +127,7 @@ public class BoardUIPlayer extends BoardUI {
 
         /* Inserts a ship on an available cell span*/
         if ("cellUIAvailableLocation".equals(property)) {                 
-            CellModel cellModel = (CellModel) propertyChangeEvent.getNewValue();
+            CellModelInterface cellModel = (CellModelInterface) propertyChangeEvent.getNewValue();
 
             findSelectedCellSpan(cellModel);
             if (this.selectedCellSpan == null) {
@@ -158,7 +159,7 @@ public class BoardUIPlayer extends BoardUI {
      * @return one cell span containing cellModel
      * @see initCellUIListener()
      */
-    private void findSelectedCellSpan(CellModel cellModel) {
+    private void findSelectedCellSpan(CellModelInterface cellModel) {
         if (this.northCellSpan.contains(cellModel)) {            
             this.selectedCellSpan = this.northCellSpan;
             return;

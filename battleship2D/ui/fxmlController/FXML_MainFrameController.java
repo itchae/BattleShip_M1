@@ -23,6 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import battleship2D.model.CellModel;
+import battleship2D.model.CellModelInterface;
 import battleship2D.model.Coord2D;
 import battleship2D.model.Direction;
 import battleship2D.model.Fleet;
@@ -174,7 +175,7 @@ public class FXML_MainFrameController implements Initializable {
                     
                     /* A cell is randomly chosen to be the missile source. 
                         The source may be any ship of the player board. */
-                    CellModel sourceCellModel = null;
+                    CellModelInterface sourceCellModel = null;
                     
                     /* Search for the first ship that has not been completely destroyed yet. */
                     for (ShipType shipType : ShipType.values()) {
@@ -199,7 +200,7 @@ public class FXML_MainFrameController implements Initializable {
                     /* A cell is randomly chosen to be the missile source. 
                         The source may be any cell tagged as "UNKNOWN" in the computer board,
                         to avoid the player discovering a computer's ship.*/
-                    CellModel sourceCellModel = this.computerController.getBoardModel().randomCell(CellType.UNKNOWN, Boolean.TRUE);
+                    CellModelInterface sourceCellModel = this.computerController.getBoardModel().randomCell(CellType.UNKNOWN, Boolean.TRUE);
                     if (sourceCellModel != null) {
                         CellUI cellUI = this.computerController.findCellUIFromModel(sourceCellModel);
                         if (cellUI != null) {
@@ -209,7 +210,7 @@ public class FXML_MainFrameController implements Initializable {
                     
                     /* A cell is randomly chosen to be the destination of the computer missile. */                    
                     Coord2D cellCoords = this.computerController.findMissileDestinationCell();
-                    CellModel destCellModel = this.playerController.getBoardModel().getCellModel(cellCoords.getRow(), cellCoords.getColumn());
+                    CellModelInterface destCellModel = this.playerController.getBoardModel().getCellModel(cellCoords.getRow(), cellCoords.getColumn());
 
                     if (destCellModel != null) {
                         CellUI cellUI = this.playerController.findCellUIFromModel(destCellModel);
@@ -303,7 +304,7 @@ public class FXML_MainFrameController implements Initializable {
      * @param cellModel - first cell of the span representing the ship
      * @see initListener()
      */    
-    private void displayValidShipSites(CellModel cellModel) {          
+    private void displayValidShipSites(CellModelInterface cellModel) {          
         int selectedShipIndex = getShipSelection().selectedShipIndex();        
         Ship selectedShip = this.playerController.getBoardModel().getFleet().getShips().get(selectedShipIndex);        
         int shipSize = selectedShip.getSize();        
@@ -503,7 +504,7 @@ public class FXML_MainFrameController implements Initializable {
 
         if ("boardUIPlayerOcean".equals(property)) {  
             /* Highlights the positions available to place a ship on the board */     
-            CellModel cellModel = (CellModel) propertyChangeEvent.getNewValue();                    
+            CellModelInterface cellModel = (CellModelInterface) propertyChangeEvent.getNewValue();                    
             displayValidShipSites(cellModel);
         }
 
