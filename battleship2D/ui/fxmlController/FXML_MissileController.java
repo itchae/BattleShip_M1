@@ -14,6 +14,7 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
@@ -37,13 +38,18 @@ public class FXML_MissileController implements Initializable {
     private final PropertyChangeSupport pcsListeners = new PropertyChangeSupport(this);   
 
     @FXML
-    private AnchorPane root;    
+    private Group root;    
  
     
-    TranslateTransition translateTransition; 
+    TranslateTransition translateTransition;
+    
+    public FXML_MissileController(){
+	//init();
+    }
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+	System.out.println("init missile");
        init();
     }
     
@@ -68,12 +74,12 @@ public class FXML_MissileController implements Initializable {
         return this.translateTransition;
     }
     
-    public AnchorPane getRoot() {
+    public Group getRoot() {
         return this.root;
     }
     
-    public void setRoot(AnchorPane ap){
-	this.root = ap;
+    public void setRoot(Group group){
+	this.root = group;
     }
     /*=========================================================================*/
     /* Private methods                                                         */       

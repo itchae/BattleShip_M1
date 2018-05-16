@@ -40,6 +40,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -53,7 +54,7 @@ public class FXML_MainFrameController implements Initializable {
     @FXML
     private BorderPane borderPane;
     
-	@FXML
+    @FXML
     private AnchorPane root;
     
     @FXML
@@ -98,7 +99,8 @@ public class FXML_MainFrameController implements Initializable {
     private BorderPane endGame;
     
     /** Missiles sent by boards */
-    private FXML_MissileController missile;
+    private FXML_MissileController missileController;
+    private Group missile;
     
     /** Explosion image and animation */
     private  Explosion explosion; 
@@ -120,16 +122,16 @@ public class FXML_MainFrameController implements Initializable {
         this.computerController.construct("Computer", new BoardModel(CellType.UNKNOWN), 
                 false, Config.level);
         
-        //init    
-        //this.missile = new FXML_MissileController();
-	//this.missile.setRoot(root);
 	// Création du loader.
 	final FXMLLoader fxmlLoader = new FXMLLoader(FXML_MissileController.class.getResource("/battleship2D/ui/fxml/FXML_Missile.fxml"));
 	try {
-	    root = (AnchorPane) fxmlLoader.load();
+	    this.missile = (Group) fxmlLoader.load();
+	    this.root.getChildren().add(this.missile);
 	} catch (IOException ex) {
 	    Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
 	}
+	
+        this.missileController = (FXML_MissileController) fxmlLoader.getController();
         this.explosion = new Explosion(20,20);         
         this.endGame = null;
         initRoot();
@@ -147,14 +149,19 @@ public class FXML_MainFrameController implements Initializable {
     
     @FXML
     private void win(){
+	System.out.println("debut win");
 	FXML_BattleShip2D.setPlayerWin(true);
 	initEndGame();
+	System.out.println("fin win");
+
     }
     
     @FXML
     private void lose(){
+	System.out.println("debut lose");
 	FXML_BattleShip2D.setPlayerWin(false);
 	initEndGame();
+	System.out.println("fin lose");
     }
     //leurs codes
      /**
@@ -343,13 +350,13 @@ public class FXML_MainFrameController implements Initializable {
         this.computerController.addPropertyChangeListener(this.propertyChangeListener);
         
         /* The missile trajectory endpoints are bound up with cell coordinates */
-        this.missile.getTranslateTransition().fromXProperty().bind(this.missileSourceX);        
-        this.missile.getTranslateTransition().fromYProperty().bind(this.missileSourceY);
-        this.missile.getTranslateTransition().toXProperty().bind(this.missileDestX);        
-        this.missile.getTranslateTransition().toYProperty().bind(this.missileDestY);
+        this.missileController.getTranslateTransition().fromXProperty().bind(this.missileSourceX);        
+        this.missileController.getTranslateTransition().fromYProperty().bind(this.missileSourceY);
+        this.missileController.getTranslateTransition().toXProperty().bind(this.missileDestX);        
+        this.missileController.getTranslateTransition().toYProperty().bind(this.missileDestY);
         
         /* This MainFrame will be notified when the missile animation has finished */
-        this.missile.addPropertyChangeListener(this.propertyChangeListener);
+        this.missileController.addPropertyChangeListener(this.propertyChangeListener);
         
         changeState(GameStages.PLAY);
     }
@@ -362,16 +369,15 @@ public class FXML_MainFrameController implements Initializable {
 	URL url = getClass().getResource("/battleship2D/ui/fxml/FXML_EndGame.fxml");
 	FXMLLoader fxmlLoader = new FXMLLoader(url);
 	try {
-	    root = (AnchorPane) (Pane) fxmlLoader.load();
-
+	    AnchorPane rootEnd = (AnchorPane) fxmlLoader.load();
+	    this.borderPane.getChildren().clear();
+	    this.borderPane.setCenter(rootEnd);
+	    
+	    rootEnd.prefWidthProperty().bind(this.borderPane.widthProperty()); 
+	    rootEnd.prefHeightProperty().bind(this.borderPane.heightProperty());
 	} catch (IOException ex) {
 	    Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
 	}
-
-        this.root.prefWidthProperty().bind(this.borderPane.widthProperty()); 
-        this.root.prefHeightProperty().bind(this.borderPane.heightProperty());
-       // this.endGame.setVisible(false);
-       // this.root.getChildren().addAll(this.endGame);
     }
     
     /**
@@ -490,7 +496,7 @@ public class FXML_MainFrameController implements Initializable {
         .add(sourceCellUI.heightProperty().divide(2))
         .add(sourceBoardUI.layoutYProperty()).add(this.center.layoutYProperty()));
         
-        this.missile.play();    
+        this.missileController.play();    
     }
     
     /**
