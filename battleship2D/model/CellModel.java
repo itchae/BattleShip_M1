@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
  * Board model element
  * @author xaviator
  */
-public class CellModel {
+public class CellModel implements CellModelInterface {
     /*=========================================================================*/
     /* Members                                                                 */       
     /*=========================================================================*/

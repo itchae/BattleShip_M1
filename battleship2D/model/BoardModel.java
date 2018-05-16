@@ -51,7 +51,7 @@ public class BoardModel implements BoardModelInterface {
      * @param direction - direction to check
      * @return the adjacent cell if it exists, null otherwise
      */
-    public CellModel adjacentCell(CellModel cellModel, Direction direction) {
+    public CellModelInterface adjacentCell(CellModelInterface cellModel, Direction direction) {
         /* Which cellModel's location? */
         Coord2D coord2D = cellCoords(cellModel);
         int row = coord2D.getRow();
@@ -93,7 +93,7 @@ public class BoardModel implements BoardModelInterface {
      * if step = 2, the adjacent cell is the second one, and so on
      * @return the adjacent cell if it exists, null otherwise
      */
-    public CellModel adjacentCell(CellModel cellModel, Direction direction, int step) {
+    public CellModelInterface adjacentCell(CellModelInterface cellModel, Direction direction, int step) {
         /* Which cellModel's location? */
         Coord2D coord2D = cellCoords(cellModel);
         int row = coord2D.getRow();
@@ -131,10 +131,10 @@ public class BoardModel implements BoardModelInterface {
      * @param cellModels - set of cells
      * @param cellType - type to check
      */
-    public static boolean areAllCellsOfType(ArrayList<CellModel>cellModels,
+    public static boolean areAllCellsOfType(ArrayList<CellModelInterface>cellModels,
             CellType cellType) {
         boolean result = true;
-        for (CellModel cellModel : cellModels) {
+        for (CellModelInterface cellModel : cellModels) {
             if (cellModel != null && cellModel.getCellType() != cellType) {
                 result = false;
                 break;
@@ -147,7 +147,7 @@ public class BoardModel implements BoardModelInterface {
      * @return the position of a cell in the board
      * @param cellModel - the cell to deal with
      */
-    public Coord2D cellCoords(CellModel cellModel) {
+    public Coord2D cellCoords(CellModelInterface cellModel) {
         int row = cellModel.getId() / BOARD_SIZE;
         int column = cellModel.getId() % BOARD_SIZE;
         
@@ -170,7 +170,7 @@ public class BoardModel implements BoardModelInterface {
      * @return the first cell of a specific type stored in this, null otherwise
      * @param cellType - type to deal with
      */
-    public CellModel findFirstCellOfType(CellType cellType) {
+    public CellModelInterface findFirstCellOfType(CellType cellType) {
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int column = 0; column < BOARD_SIZE; column++) {
                 if (isCellOfType(this.board[row][column], cellType)) {
@@ -187,10 +187,10 @@ public class BoardModel implements BoardModelInterface {
      * @param cellType - type to check
      * @return the first cell found of type cellType, null if no cell has been found
      */
-    public static CellModel findFirstCellOfType(ArrayList<CellModel>cellModels,
+    public static CellModelInterface findFirstCellOfType(ArrayList<CellModelInterface>cellModels,
             CellType cellType) {
-        CellModel result = null;
-        for (CellModel cellModel : cellModels) {
+        CellModelInterface result = null;
+        for (CellModelInterface cellModel : cellModels) {
             if (cellModel != null && cellModel.getCellType() == cellType) {
                 result = cellModel;
                 break;
@@ -205,7 +205,7 @@ public class BoardModel implements BoardModelInterface {
      * @param cellType - the type to compare with the cell's
      * @return true if cellModel's type is the same as cellType
      */
-    public Boolean isCellOfType(CellModel cellModel,
+    public Boolean isCellOfType(CellModelInterface cellModel,
                                 CellType cellType) {        
             return cellModel.getCellType() == cellType;
     }
@@ -230,10 +230,10 @@ public class BoardModel implements BoardModelInterface {
      * @param cellType - type of the cell to search
      * @param isCellType - determines whether the type of the cell to search for is equal to cellType or not
      */
-    public CellModel randomCell(CellType cellType, Boolean isCellType) {
+    public CellModelInterface randomCell(CellType cellType, Boolean isCellType) {
         Random generator = new Random();        
         Integer randomId;
-        CellModel cellModel;
+        CellModelInterface cellModel;
         
         while(true){            
             /* this.cellId is the cell global counter */   
@@ -284,7 +284,7 @@ public class BoardModel implements BoardModelInterface {
      * Getters / Setters
      */    
        
-    public CellModel getCellModel(int row, int column) {
+    public CellModelInterface getCellModel(int row, int column) {
         return this.board[row][column];
     }
     
@@ -319,7 +319,7 @@ public class BoardModel implements BoardModelInterface {
      * @return the cell matching cellId, null otherwise
      * @see isCellOfType()
      */
-    private CellModel findCellWithId(Integer cellId) {
+    private CellModelInterface findCellWithId(Integer cellId) {
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int column = 0; column < BOARD_SIZE; column++) {
                 if (this.board[row][column].getId() == cellId) {

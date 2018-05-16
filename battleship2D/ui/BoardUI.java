@@ -3,6 +3,7 @@ package battleship2D.ui;
 import battleship2D.model.BoardModel;
 import battleship2D.model.BoardModelInterface;
 import battleship2D.model.CellModel;
+import battleship2D.model.CellModelInterface;
 import battleship2D.model.CellType;
 import battleship2D.model.Direction;
 import java.beans.PropertyChangeEvent;
@@ -26,7 +27,7 @@ public abstract class BoardUI extends GridPane {
     protected final BoardModelInterface boardModel;
     
     /** Set of oriented cells available for placing a ship on the board */
-    protected ArrayList<CellModel> eastCellSpan, northCellSpan, southCellSpan, westCellSpan;    
+    protected ArrayList<CellModelInterface> eastCellSpan, northCellSpan, southCellSpan, westCellSpan;    
     
     /** Designated cells for missile  trajectorey endpoints */
     protected CellUI missileDestination, missileSource;
@@ -71,7 +72,7 @@ public abstract class BoardUI extends GridPane {
      * @param cellModel - associated CellModel 
      * @return the associated CellUI if found, null otherwise
      */
-    public CellUI findCellUIFromModel(CellModel cellModel) {
+    public CellUI findCellUIFromModel(CellModelInterface cellModel) {
         for (Node cellUI :  this.getManagedChildren()) {
             if (((CellUI)(cellUI)).getCellModel() == cellModel) {
                 return (CellUI) cellUI;
@@ -148,9 +149,9 @@ public abstract class BoardUI extends GridPane {
      * @return the set of cells if there are enough available cells 
      * (i.e. the span does not expand beyond the grid), null otherwise
      */
-    protected ArrayList<CellModel> cellSpan(CellModel cellModel,
+    protected ArrayList<CellModelInterface> cellSpan(CellModelInterface cellModel,
                                           Direction direction, int nbCells) {
-        ArrayList<CellModel> cellSpan = null;
+        ArrayList<CellModelInterface> cellSpan = null;
         
         switch(direction) {
             case NORTH:
@@ -173,10 +174,10 @@ public abstract class BoardUI extends GridPane {
             cellSpan.clear();        
 
             /* currentCell is the first cellSpan's cell  */
-            CellModel currentCell = cellModel;
+            CellModelInterface currentCell = cellModel;
             cellSpan.add(currentCell);
 
-            CellModel nextCell;
+            CellModelInterface nextCell;
             for (int i = 1 ; i < nbCells; i++) {
                 nextCell = this.boardModel.adjacentCell(currentCell, direction);
 

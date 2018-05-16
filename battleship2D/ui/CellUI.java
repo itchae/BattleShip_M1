@@ -1,6 +1,7 @@
 package battleship2D.ui;
 
 import battleship2D.model.CellModel;
+import battleship2D.model.CellModelInterface;
 import battleship2D.model.CellType;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -26,7 +27,7 @@ public class CellUI extends Region {
     /*=========================================================================*/
     
     /** Related cell model */
-    private final CellModel cellModel;
+    private final CellModelInterface cellModel;
     
     /** Cell color depends on the related cell model */
     private SimpleStringProperty cellModelColorProperty = null;
@@ -54,7 +55,7 @@ public class CellUI extends Region {
      * @param isBound - determines whether this CellUI's style is bound to cell model's
      * @param cellModel - related cell
      */
-    public CellUI(CellModel cellModel, Boolean isBound) {     
+    public CellUI(CellModelInterface cellModel, Boolean isBound) {     
         super();
         this.cellModel = cellModel;
         
@@ -129,7 +130,7 @@ public class CellUI extends Region {
     *   Getters / Setters
     */
     
-    public CellModel getCellModel() {
+    public CellModelInterface getCellModel() {
         return this.cellModel;
     }
     
