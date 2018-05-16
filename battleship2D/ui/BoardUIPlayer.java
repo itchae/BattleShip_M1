@@ -1,6 +1,7 @@
 package battleship2D.ui;
 
 import battleship2D.model.BoardModel;
+import battleship2D.model.BoardModelInterface;
 import battleship2D.model.CellModel;
 import battleship2D.model.CellType;
 import battleship2D.model.Direction;
@@ -30,7 +31,7 @@ public class BoardUIPlayer extends BoardUI {
      * @param boardModel - related model
      * @param isBound - determines whether CellUI's styles are bound to cell models'     * 
      */
-    public BoardUIPlayer(String name, BoardModel boardModel, Boolean isBound) {
+    public BoardUIPlayer(String name, BoardModelInterface boardModel, Boolean isBound) {
         super(name, boardModel, isBound);
         
         this.selectedCellSpan = null;

@@ -6,6 +6,7 @@
 package battleship2D.ui.fxmlController;
 
 import battleship2D.model.BoardModel;
+import battleship2D.model.BoardModelInterface;
 import battleship2D.model.CellModel;
 import battleship2D.model.CellType;
 import battleship2D.model.Coord2D;
@@ -38,7 +39,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      /** Skill level for the computer */
     private  SkillLevel skillLevel;
     /** Store moves played against the player */
-    private  BoardModel playerBoardModelCopy;
+    private  BoardModelInterface playerBoardModelCopy;
     /** Store a copy the last targeted cell in the player board */
     private CellModel lastCellTargeted;
     /** Store a selection of cells for future targets 
@@ -59,7 +60,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
         root.prefWidthProperty().bind(root.widthProperty());
     }    
     
-    public void construct(String name, BoardModel boardModel, Boolean isBound,
+    public void construct(String name, BoardModelInterface boardModel, Boolean isBound,
             SkillLevel skillLevel){
         super.construct(name, boardModel, isBound);
         this.futureTargets = new HashMap<>();
@@ -109,7 +110,9 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
                 
             case EXPERT:
                 coord2D = findMissileDestinationCellExpert();
-                break;            
+                break; 
+            case ONLINE :       //appelle au server distant pour avoir la case jouer par l'adversaire
+                break;
         }
         return coord2D;
     }

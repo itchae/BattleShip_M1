@@ -6,6 +6,7 @@
 package battleship2D.ui.fxmlController;
 
 import battleship2D.model.BoardModel;
+import battleship2D.model.BoardModelInterface;
 import battleship2D.model.CellModel;
 import battleship2D.model.CellType;
 import battleship2D.model.Direction;
@@ -27,7 +28,7 @@ public abstract class FXML_BordUIController  {
     
     
     /** Related board model */
-    protected  BoardModel boardModel;
+    protected  BoardModelInterface boardModel;
     /** Board name */
     private  String name;
     
@@ -45,7 +46,7 @@ public abstract class FXML_BordUIController  {
     protected ArrayList<CellModel> eastCellSpan, northCellSpan, southCellSpan, westCellSpan; 
     
 
-    public void construct(String name, BoardModel boardModel, Boolean isBound){
+    public void construct(String name, BoardModelInterface boardModel, Boolean isBound){
         this.name = name;
         this.missileDestination = null;
         this.missileSource = null;
@@ -112,7 +113,7 @@ public abstract class FXML_BordUIController  {
      * Getters / setters
      */
     
-    public BoardModel getBoardModel() {
+    public BoardModelInterface getBoardModel() {
         return this.boardModel;
     }
     
