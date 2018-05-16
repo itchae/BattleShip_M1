@@ -1,6 +1,7 @@
 package battleship2D.ui;
 
 import battleship2D.model.BoardModel;
+import battleship2D.model.BoardModelInterface;
 import battleship2D.model.CellModel;
 import battleship2D.model.CellType;
 import battleship2D.model.Coord2D;
@@ -37,7 +38,7 @@ public class BoardUIComputer extends BoardUI {
     private CellModel lastCellTargeted;
     
     /** Store moves played against the player */
-    private final BoardModel playerBoardModelCopy;
+    private final BoardModelInterface playerBoardModelCopy;
     
     /** Skill level for the computer */
     private final SkillLevel skillLevel;
@@ -53,7 +54,7 @@ public class BoardUIComputer extends BoardUI {
      * @param isBound - determines whether CellUI's styles are bound to cell models'
      * @param skillLevel - level associated with the computer
      */
-    public BoardUIComputer(String name, BoardModel boardModel, Boolean isBound,
+    public BoardUIComputer(String name, BoardModelInterface boardModel, Boolean isBound,
             SkillLevel skillLevel) {
         super(name, boardModel, isBound);
         

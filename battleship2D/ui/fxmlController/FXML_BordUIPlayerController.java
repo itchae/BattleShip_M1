@@ -6,6 +6,7 @@
 package battleship2D.ui.fxmlController;
 
 import battleship2D.model.BoardModel;
+import battleship2D.model.BoardModelInterface;
 import battleship2D.model.CellModel;
 import battleship2D.model.CellType;
 import battleship2D.model.Direction;
@@ -39,7 +40,7 @@ public class FXML_BordUIPlayerController extends FXML_BordUIController implement
         root.prefWidthProperty().bind(root.widthProperty());
     }    
     
-    public void construct (String name, BoardModel boardModel, Boolean isBound){
+    public void construct (String name, BoardModelInterface boardModel, Boolean isBound){
         super.construct(name, boardModel, isBound);
         this.selectedCellSpan = null;
     }
@@ -49,7 +50,7 @@ public class FXML_BordUIPlayerController extends FXML_BordUIController implement
          return root;
      }
     
-    public BoardModel getBoardModel(){
+    public BoardModelInterface getBoardModel(){
         return super.getBoardModel();
     }
     

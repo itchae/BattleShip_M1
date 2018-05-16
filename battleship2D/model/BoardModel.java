@@ -7,7 +7,7 @@ import java.util.Random;
  * Global board for manipulating cells
  * @author xaviator
  */
-public class BoardModel {
+public class BoardModel implements BoardModelInterface {
     /*=========================================================================*/
     /* Members                                                                 */       
     /*=========================================================================*/

@@ -1,6 +1,7 @@
 package battleship2D.ui;
 
 import battleship2D.model.BoardModel;
+import battleship2D.model.BoardModelInterface;
 import battleship2D.model.CellModel;
 import battleship2D.model.CellType;
 import battleship2D.model.Direction;
@@ -22,7 +23,7 @@ public abstract class BoardUI extends GridPane {
     /*=========================================================================*/
     
     /** Related board model */
-    protected final BoardModel boardModel;
+    protected final BoardModelInterface boardModel;
     
     /** Set of oriented cells available for placing a ship on the board */
     protected ArrayList<CellModel> eastCellSpan, northCellSpan, southCellSpan, westCellSpan;    
@@ -50,7 +51,7 @@ public abstract class BoardUI extends GridPane {
      * @param boardModel - related model
      * @param isBound - determines whether CellUI's styles are bound to cell models'
      */
-    public BoardUI(String name, BoardModel boardModel, Boolean isBound) {
+    public BoardUI(String name, BoardModelInterface boardModel, Boolean isBound) {
         super();
         this.name = name;
         this.missileDestination = null;
@@ -110,7 +111,7 @@ public abstract class BoardUI extends GridPane {
      * Getters / setters
      */
     
-    public BoardModel getBoardModel() {
+    public BoardModelInterface getBoardModel() {
         return this.boardModel;
     }
     
