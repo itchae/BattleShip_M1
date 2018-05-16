@@ -29,20 +29,13 @@ import battleship2D.model.Fleet;
 import battleship2D.model.Ship;
 import battleship2D.ui.Explosion;
 import battleship2D.ui.MainFrame;
-import battleship2D.ui.Missile;
-import battleship2D.ui.fxml.FXML_BattleShip2D;
-import static com.sun.javafx.scene.control.skin.Utils.getResource;
-import java.io.IOException;
+import battleship2D.ui.fxml.FXML_BattleShip2D;import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 /**
  * FXML Controller class
  *
@@ -148,19 +141,14 @@ public class FXML_MainFrameController implements Initializable {
     
     @FXML
     private void win(){
-	System.out.println("debut win");
 	FXML_BattleShip2D.setPlayerWin(true);
 	initEndGame();
-	System.out.println("fin win");
-
     }
     
     @FXML
     private void lose(){
-	System.out.println("debut lose");
 	FXML_BattleShip2D.setPlayerWin(false);
 	initEndGame();
-	System.out.println("fin lose");
     }
     //leurs codes
      /**

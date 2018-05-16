@@ -1,3 +1,7 @@
 .border {
-    -fx-background-image:url('../../pictures/battleship-endgame.png');
+    -fx-background-image:url('../../pictures/background_menu.jpg');
+}
+
+.anchor{
+    -fx-background-image:url('../../pictures/background_menu.jpg');
 }
