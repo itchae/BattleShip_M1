@@ -29,7 +29,7 @@ public class FXML_MainMenuController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         
-            root.setStyle(" -fx-background-image:url('/battleship2D/pictures/"+Config.dossier+"/background_menu.jpg')");
+            root.setStyle(" -fx-background-image:url('/battleship2D/pictures/"+Config.dossier+"/background_menu.jpg'); -fx-background-size: contain;");
            
     }
     

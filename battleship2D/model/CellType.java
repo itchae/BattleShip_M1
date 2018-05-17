@@ -16,8 +16,8 @@ public enum CellType{
     CARRIER(ShipType.CARRIER),
     CRUISER(ShipType.CRUISER),
     DESTROYER(ShipType.DESTROYER),
-    HIT("Hit", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/ship-explosion.jpg\")"), // a piece of ship has been hit by a foe missile
-    OCEAN("Ocean", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/ocean.jpeg\")"), // nothing on this tile    
+    HIT("Hit", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/ship-explosion.jpg\"); -fx-background-size: contain;"), // a piece of ship has been hit by a foe missile
+    OCEAN("Ocean", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/ocean.jpeg\"); -fx-background-size: contain;"), // nothing on this tile    
     SUBMARINE(ShipType.SUBMARINE),   
     UNKNOWN("Unknown", "-fx-background-color: black"); // the cell is hidden by some "fog of war"
 

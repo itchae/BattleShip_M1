@@ -11,11 +11,11 @@ public enum ShipType {
     /* Members                                                                 */       
     /*=========================================================================*/
     
-    BATTLESHIP("Battleship", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/battleship.jpg\")"),
-    CARRIER("Carrier", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/carrier.jpg\")"),
-    CRUISER("Cruiser", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/cruiser.jpg\")"),
-    DESTROYER("Destroyer", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/destroyer.jpg\")"),
-    SUBMARINE("Submarine", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/submarine.jpeg\")");
+    BATTLESHIP("Battleship", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/battleship.jpg\"); -fx-background-size: contain;"),
+    CARRIER("Carrier", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/carrier.jpg\"); -fx-background-size: contain;"),
+    CRUISER("Cruiser", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/cruiser.jpg\"); -fx-background-size: contain;"),
+    DESTROYER("Destroyer", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/destroyer.jpg\"); -fx-background-size: contain;"),
+    SUBMARINE("Submarine", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/submarine.jpeg\"); -fx-background-size: contain;");
 
     /** Rendering either as a color or an image */
     private final String appearance;

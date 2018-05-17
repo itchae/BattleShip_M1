@@ -19,6 +19,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -51,7 +53,8 @@ public class FXML_BattleShip2D extends Application   {
         choixTheme.initOwner(primaryStage);
         ObservableList<String> options = 
     FXCollections.observableArrayList(
-        "default"
+        "default",
+            "etienne"
     );
         ComboBox choix = new ComboBox(options);
         choix.setValue("default");
@@ -64,12 +67,19 @@ public class FXML_BattleShip2D extends Application   {
 	  final URL url = getClass().getResource("FXML_MainMenu.fxml");
 	  final FXMLLoader fxmlLoader = new FXMLLoader(url);
 	  root = (Pane) fxmlLoader.load();
+          if(!Config.dossier.equals("default") ){
+              Media media = new Media(getClass().getResource("/battleship2D/pictures/"+Config.dossier+"/song.mp3").toExternalForm());
+              MediaPlayer mp = new MediaPlayer(media);
+              mp.setVolume(0.25);
+              mp.setCycleCount(MediaPlayer.INDEFINITE);
+              mp.play();
+          }
 	} catch (IOException ex) {
 	  System.err.println("Erreur au chargement: " + ex);
 	}   
         
        if (root != null){
-        Scene scene = new Scene(FXML_BattleShip2D.root, 900,600);
+        Scene scene = new Scene(FXML_BattleShip2D.root, 1280,720);
         primaryStage.setScene(scene);
         primaryStage.show();  
        }

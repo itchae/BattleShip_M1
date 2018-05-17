@@ -36,7 +36,8 @@ public class BattleShip2D extends Application {
         choixTheme.initOwner(primaryStage);
         ObservableList<String> options = 
     FXCollections.observableArrayList(
-        "default"
+        "default",
+            "etienne"
     );
         ComboBox choix = new ComboBox(options);
         
