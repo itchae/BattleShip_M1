@@ -9,6 +9,7 @@ import battleship2D.model.Direction;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
@@ -52,7 +53,7 @@ public abstract class BoardUI extends GridPane {
      * @param boardModel - related model
      * @param isBound - determines whether CellUI's styles are bound to cell models'
      */
-    public BoardUI(String name, BoardModelInterface boardModel, Boolean isBound) {
+    public BoardUI(String name, BoardModelInterface boardModel, Boolean isBound) throws RemoteException {
         super();
         this.name = name;
         this.missileDestination = null;
@@ -86,7 +87,7 @@ public abstract class BoardUI extends GridPane {
      * @param cellType - ship type
      * @return true if a ship has been placed on the board
      */
-    public Boolean isShipOnBoard(CellType cellType) {
+    public Boolean isShipOnBoard(CellType cellType) throws RemoteException {
         /*
             We search for one part of ship only over the board.
             We assume that if one part of the ship has been placed on the board,
@@ -150,7 +151,7 @@ public abstract class BoardUI extends GridPane {
      * (i.e. the span does not expand beyond the grid), null otherwise
      */
     protected ArrayList<CellModelInterface> cellSpan(CellModelInterface cellModel,
-                                          Direction direction, int nbCells) {
+                                          Direction direction, int nbCells) throws RemoteException {
         ArrayList<CellModelInterface> cellSpan = null;
         
         switch(direction) {
@@ -221,7 +222,7 @@ public abstract class BoardUI extends GridPane {
      * @param isBound - determines whether CellUI's styles are bound to cell models'
      * @see BoardUI()
      */
-    private void initCells(Boolean isBound) {
+    private void initCells(Boolean isBound) throws RemoteException {
         for (int row = 0; row < BoardModel.BOARD_SIZE; row++) {        
             for (int column = 0; column < BoardModel.BOARD_SIZE; column++) {
                 CellUI cellUI = new CellUI(this.boardModel.getCellModel(row, column), isBound);                

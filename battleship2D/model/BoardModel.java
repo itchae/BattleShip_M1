@@ -1,5 +1,8 @@
 package battleship2D.model;
 
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -7,7 +10,7 @@ import java.util.Random;
  * Global board for manipulating cells
  * @author xaviator
  */
-public class BoardModel implements BoardModelInterface {
+public class BoardModel extends UnicastRemoteObject implements BoardModelInterface,Serializable  {
     /*=========================================================================*/
     /* Members                                                                 */       
     /*=========================================================================*/
@@ -36,7 +39,7 @@ public class BoardModel implements BoardModelInterface {
      * Constructor
      * @param cellType - default cell type for every board cell
      */
-    public BoardModel(CellType cellType) {
+    public BoardModel(CellType cellType) throws RemoteException {
         this.cellId = 0;
         this.fleet = new Fleet();
         this.defaultCellType = cellType;
@@ -51,7 +54,8 @@ public class BoardModel implements BoardModelInterface {
      * @param direction - direction to check
      * @return the adjacent cell if it exists, null otherwise
      */
-    public CellModelInterface adjacentCell(CellModelInterface cellModel, Direction direction) {
+    @Override
+    public CellModelInterface adjacentCell(CellModelInterface cellModel, Direction direction) throws RemoteException {
         /* Which cellModel's location? */
         Coord2D coord2D = cellCoords(cellModel);
         int row = coord2D.getRow();
@@ -93,7 +97,8 @@ public class BoardModel implements BoardModelInterface {
      * if step = 2, the adjacent cell is the second one, and so on
      * @return the adjacent cell if it exists, null otherwise
      */
-    public CellModelInterface adjacentCell(CellModelInterface cellModel, Direction direction, int step) {
+    @Override
+    public CellModelInterface adjacentCell(CellModelInterface cellModel, Direction direction, int step) throws RemoteException {
         /* Which cellModel's location? */
         Coord2D coord2D = cellCoords(cellModel);
         int row = coord2D.getRow();
@@ -132,7 +137,7 @@ public class BoardModel implements BoardModelInterface {
      * @param cellType - type to check
      */
     public static boolean areAllCellsOfType(ArrayList<CellModelInterface>cellModels,
-            CellType cellType) {
+            CellType cellType)  throws RemoteException{
         boolean result = true;
         for (CellModelInterface cellModel : cellModels) {
             if (cellModel != null && cellModel.getCellType() != cellType) {
@@ -147,7 +152,8 @@ public class BoardModel implements BoardModelInterface {
      * @return the position of a cell in the board
      * @param cellModel - the cell to deal with
      */
-    public Coord2D cellCoords(CellModelInterface cellModel) {
+    @Override
+    public Coord2D cellCoords(CellModelInterface cellModel) throws RemoteException {
         int row = cellModel.getId() / BOARD_SIZE;
         int column = cellModel.getId() % BOARD_SIZE;
         
@@ -157,7 +163,8 @@ public class BoardModel implements BoardModelInterface {
     /**
      * Displays board's contents
      */
-    public void display() {
+    @Override
+    public void display()  throws RemoteException{
         for (int row = 0; row < BOARD_SIZE; row++) {          
             for (int column = 0; column < BOARD_SIZE; column++) {
                 System.out.print(this.board[row][column].display() + ", ");                
@@ -170,7 +177,8 @@ public class BoardModel implements BoardModelInterface {
      * @return the first cell of a specific type stored in this, null otherwise
      * @param cellType - type to deal with
      */
-    public CellModelInterface findFirstCellOfType(CellType cellType) {
+    @Override
+    public CellModelInterface findFirstCellOfType(CellType cellType)  throws RemoteException{
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int column = 0; column < BOARD_SIZE; column++) {
                 if (isCellOfType(this.board[row][column], cellType)) {
@@ -188,7 +196,7 @@ public class BoardModel implements BoardModelInterface {
      * @return the first cell found of type cellType, null if no cell has been found
      */
     public static CellModelInterface findFirstCellOfType(ArrayList<CellModelInterface>cellModels,
-            CellType cellType) {
+            CellType cellType) throws RemoteException {
         CellModelInterface result = null;
         for (CellModelInterface cellModel : cellModels) {
             if (cellModel != null && cellModel.getCellType() == cellType) {
@@ -205,8 +213,9 @@ public class BoardModel implements BoardModelInterface {
      * @param cellType - the type to compare with the cell's
      * @return true if cellModel's type is the same as cellType
      */
+    @Override
     public Boolean isCellOfType(CellModelInterface cellModel,
-                                CellType cellType) {        
+                                CellType cellType) throws RemoteException {        
             return cellModel.getCellType() == cellType;
     }
 
@@ -214,7 +223,8 @@ public class BoardModel implements BoardModelInterface {
      * @return true if a specific kind of cell is currenlty located on the board
      * @param cellType - type of the cell to test
      */
-    public Boolean isCellTypeInside(CellType cellType) {
+    @Override
+    public Boolean isCellTypeInside(CellType cellType) throws RemoteException {
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int column = 0; column < BOARD_SIZE; column++) {
                 if (this.board[row][column].getCellType() == cellType) {
@@ -230,7 +240,8 @@ public class BoardModel implements BoardModelInterface {
      * @param cellType - type of the cell to search
      * @param isCellType - determines whether the type of the cell to search for is equal to cellType or not
      */
-    public CellModelInterface randomCell(CellType cellType, Boolean isCellType) {
+    @Override
+    public CellModelInterface randomCell(CellType cellType, Boolean isCellType) throws RemoteException {
         Random generator = new Random();        
         Integer randomId;
         CellModelInterface cellModel;
@@ -256,8 +267,9 @@ public class BoardModel implements BoardModelInterface {
      * @param oldCellType - type to replace
      * @param newCellType - new type to set 
      */
+    @Override
     public void replaceAll(CellType oldCellType,
-                            CellType newCellType) {
+                            CellType newCellType) throws RemoteException {
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int column = 0; column < BOARD_SIZE; column++) {
                 if (this.board[row][column].getCellType() == oldCellType) {
@@ -271,7 +283,8 @@ public class BoardModel implements BoardModelInterface {
      * Resets board's contents to default value
      * @param cellType - default value
      */
-    public void reset(CellType cellType) {
+    @Override
+    public void reset(CellType cellType)  throws RemoteException{
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int column = 0; column < BOARD_SIZE; column++) {
                 this.board[row][column].setCellType(cellType);                
@@ -283,16 +296,16 @@ public class BoardModel implements BoardModelInterface {
     /*
      * Getters / Setters
      */    
-       
-    public CellModelInterface getCellModel(int row, int column) {
+     @Override  
+    public CellModelInterface getCellModel(int row, int column) throws RemoteException {
         return this.board[row][column];
     }
-    
-    public CellType getDefaultCellType() {
+    @Override
+    public CellType getDefaultCellType() throws RemoteException {
         return this.defaultCellType;
     }
-    
-    public Fleet getFleet() {
+    @Override
+    public Fleet getFleet() throws RemoteException {
         return this.fleet;
     }
 
@@ -319,7 +332,7 @@ public class BoardModel implements BoardModelInterface {
      * @return the cell matching cellId, null otherwise
      * @see isCellOfType()
      */
-    private CellModelInterface findCellWithId(Integer cellId) {
+    private CellModelInterface findCellWithId(Integer cellId)  throws RemoteException{
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int column = 0; column < BOARD_SIZE; column++) {
                 if (this.board[row][column].getId() == cellId) {
@@ -335,7 +348,7 @@ public class BoardModel implements BoardModelInterface {
      * @param cellType - default cell type for every cell 
      * @see BoardModel()
      */
-    private void init(CellType cellType) {
+    private void init(CellType cellType) throws RemoteException {
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int column = 0; column < BOARD_SIZE; column++) {                
                 this.board[row][column] = new CellModel(cellType, this.cellId++);                   

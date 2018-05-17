@@ -7,6 +7,7 @@ import battleship2D.model.CellModelInterface;
 import battleship2D.model.CellType;
 import battleship2D.model.Direction;
 import java.beans.PropertyChangeEvent;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
@@ -32,7 +33,7 @@ public class BoardUIPlayer extends BoardUI {
      * @param boardModel - related model
      * @param isBound - determines whether CellUI's styles are bound to cell models'     * 
      */
-    public BoardUIPlayer(String name, BoardModelInterface boardModel, Boolean isBound) {
+    public BoardUIPlayer(String name, BoardModelInterface boardModel, Boolean isBound) throws RemoteException {
         super(name, boardModel, isBound);
         
         this.selectedCellSpan = null;
@@ -45,7 +46,7 @@ public class BoardUIPlayer extends BoardUI {
      * @param shipSize ship's span
      */
     public void availableCellSpanByDirection(CellModelInterface cellModel,
-            Direction direction, int shipSize) {
+            Direction direction, int shipSize) throws RemoteException {
         
         ArrayList<CellModelInterface> cellSpanByDirection = cellSpan(cellModel, direction, shipSize);
         
@@ -82,7 +83,7 @@ public class BoardUIPlayer extends BoardUI {
      * - highlighting the available locations to insert a ship
      * @param shipType - type of the currenly selected ship, expressed as a CellType
      */
-    public void eraseSelectedShipLocations(CellType shipType) {
+    public void eraseSelectedShipLocations(CellType shipType) throws RemoteException {
         this.boardModel.replaceAll(shipType,
                                    this.boardModel.getDefaultCellType());
         
@@ -94,7 +95,7 @@ public class BoardUIPlayer extends BoardUI {
      * Validates the user choice by actually inserting a ship on board
      * @param cellType - type related to the ship to insert
      */
-    public void placeShipOnBoard(CellType cellType) {
+    public void placeShipOnBoard(CellType cellType) throws RemoteException {
         if (this.selectedCellSpan != null) {
             for (CellModelInterface cellModel : this.selectedCellSpan) {
                 cellModel.setCellType(cellType);

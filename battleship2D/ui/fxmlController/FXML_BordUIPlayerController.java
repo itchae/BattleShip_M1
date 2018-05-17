@@ -14,6 +14,7 @@ import battleship2D.model.Direction;
 import battleship2D.ui.CellUI;
 import java.beans.PropertyChangeEvent;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -41,7 +42,7 @@ public class FXML_BordUIPlayerController extends FXML_BordUIController implement
         root.prefWidthProperty().bind(root.widthProperty());
     }    
     
-    public void construct (String name, BoardModelInterface boardModel, Boolean isBound){
+    public void construct (String name, BoardModelInterface boardModel, Boolean isBound) throws RemoteException{
         super.construct(name, boardModel, isBound);
         this.selectedCellSpan = null;
     }
@@ -130,7 +131,7 @@ public class FXML_BordUIPlayerController extends FXML_BordUIController implement
      * Validates the user choice by actually inserting a ship on board
      * @param cellType - type related to the ship to insert
      */
-    public void placeShipOnBoard(CellType cellType) {
+    public void placeShipOnBoard(CellType cellType) throws RemoteException {
         if (this.selectedCellSpan != null) {
             for (CellModelInterface cellModel : this.selectedCellSpan) {
                 cellModel.setCellType(cellType);
@@ -145,7 +146,7 @@ public class FXML_BordUIPlayerController extends FXML_BordUIController implement
      * @param shipSize ship's span
      */
     public void availableCellSpanByDirection(CellModelInterface cellModel,
-            Direction direction, int shipSize) {
+            Direction direction, int shipSize) throws RemoteException {
         
         ArrayList<CellModelInterface> cellSpanByDirection = cellSpan(cellModel, direction, shipSize);
         
@@ -182,7 +183,7 @@ public class FXML_BordUIPlayerController extends FXML_BordUIController implement
      * - highlighting the available locations to insert a ship
      * @param shipType - type of the currenly selected ship, expressed as a CellType
      */
-    public void eraseSelectedShipLocations(CellType shipType) {
+    public void eraseSelectedShipLocations(CellType shipType) throws RemoteException {
         this.boardModel.replaceAll(shipType,
                                    this.boardModel.getDefaultCellType());
         

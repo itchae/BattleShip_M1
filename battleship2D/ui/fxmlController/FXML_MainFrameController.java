@@ -34,6 +34,7 @@ import battleship2D.ui.Missile;
 import battleship2D.ui.fxml.FXML_BattleShip2D;
 import static com.sun.javafx.scene.control.skin.Utils.getResource;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -116,11 +117,23 @@ public class FXML_MainFrameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        //construct
-        playerController.construct("Player", new BoardModel(CellType.OCEAN), true);
-        this.shipInsertionController.construct(this.playerController.getBoardModel().getFleet());
-        this.computerController.construct("Computer", new BoardModel(CellType.UNKNOWN), 
-                false, Config.level);
+        try {
+            //construct
+            playerController.construct("Player", new BoardModel(CellType.OCEAN), true);
+        } catch (RemoteException ex) {
+            Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            this.shipInsertionController.construct(this.playerController.getBoardModel().getFleet());
+        } catch (RemoteException ex) {
+            Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            this.computerController.construct("Computer", new BoardModel(CellType.UNKNOWN),
+                    false, Config.level);
+        } catch (RemoteException ex) {
+            Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
 	// Création du loader.
 	final FXMLLoader fxmlLoader = new FXMLLoader(FXML_MissileController.class.getResource("/battleship2D/ui/fxml/FXML_Missile.fxml"));
@@ -168,7 +181,7 @@ public class FXML_MainFrameController implements Initializable {
      * Updates the stage of the game
      * @param gameStage new game stage
      */
-    public void changeState(GameStages gameStage) {
+    public void changeState(GameStages gameStage) throws RemoteException {
         setGameStage(gameStage);
         
         switch(this.gameStage) {
@@ -282,7 +295,7 @@ public class FXML_MainFrameController implements Initializable {
      * @param shipType - the kind of ship that was hit
      * @see initListener()
      */
-    private void displayLastHitInfo(FXML_BordUIController boardUI, ShipType shipType) {
+    private void displayLastHitInfo(FXML_BordUIController boardUI, ShipType shipType) throws RemoteException {
         Fleet fleet = boardUI.getBoardModel().getFleet();
         Ship hitShip = fleet.findShipFromType(shipType);        
         
@@ -316,7 +329,7 @@ public class FXML_MainFrameController implements Initializable {
      * @param cellModel - first cell of the span representing the ship
      * @see initListener()
      */    
-    private void displayValidShipSites(CellModelInterface cellModel) {          
+    private void displayValidShipSites(CellModelInterface cellModel) throws RemoteException {          
         int selectedShipIndex = getShipSelection().selectedShipIndex();        
         Ship selectedShip = this.playerController.getBoardModel().getFleet().getShips().get(selectedShipIndex);        
         int shipSize = selectedShip.getSize();        
@@ -332,7 +345,7 @@ public class FXML_MainFrameController implements Initializable {
      * Initializes computer board's fleet and displays it
      * @see changeState()
      */
-    private void initComputerBoard() {
+    private void initComputerBoard() throws RemoteException {
         /* No action from both the player board and the ship selection widgets are allowed anymore */
         this.playerController.removePropertyChangeListener(this.propertyChangeListener);
         this.shipInsertionController.removePropertyChangeListener(this.propertyChangeListener);
@@ -397,7 +410,11 @@ public class FXML_MainFrameController implements Initializable {
         this.propertyChangeListener = (PropertyChangeEvent propertyChangeEvent) -> {
             
             if (this.gameStage ==  GameStages.PLACE_SHIPS_ON_PLAYER_BOARD) {
-                manageEventsPlaceShipsOnPlayerBoard(propertyChangeEvent);
+                try {
+                    manageEventsPlaceShipsOnPlayerBoard(propertyChangeEvent);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             else {  
                 String property = propertyChangeEvent.getPropertyName();
@@ -411,27 +428,63 @@ public class FXML_MainFrameController implements Initializable {
                 if ("missileTargetReached".equals(property)) { 
                     if (this.turn == Turn.COMPUTER) {
                         CellUI destCellUI = this.playerController.getMissileDestination();
-                        destCellUI.updateAfterMissile();
+                        try {
+                            destCellUI.updateAfterMissile();
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         if (destCellUI.isLastHitAShip()) {
                             ShipType shipType = CellType.cellTypeToShipType(destCellUI.getLastHit());
-                            this.playerController.getBoardModel().getFleet().updateHits(shipType);
-                            showExplosion(this.playerController);
-                            displayLastHitInfo(this.playerController, shipType);
+                            try {
+                                this.playerController.getBoardModel().getFleet().updateHits(shipType);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            try {
+                                showExplosion(this.playerController);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            try {
+                                displayLastHitInfo(this.playerController, shipType);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                         this.turn = Turn.PLAYER;
                     }
                     else if (this.turn == Turn.PLAYER) {
                         CellUI destCellUI = this.computerController.getMissileDestination();
-                        destCellUI.updateAfterMissile();
+                        try {
+                            destCellUI.updateAfterMissile();
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         if (destCellUI.isLastHitAShip()) {
                             ShipType shipType = CellType.cellTypeToShipType(destCellUI.getLastHit());
-                            this.computerController.getBoardModel().getFleet().updateHits(shipType);
-                            showExplosion(computerController);
-                            displayLastHitInfo(this.computerController, shipType);                            
+                            try {
+                                this.computerController.getBoardModel().getFleet().updateHits(shipType);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            try {
+                                showExplosion(computerController);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            try {                            
+                                displayLastHitInfo(this.computerController, shipType);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                         this.turn = Turn.COMPUTER;            
                     }
-                    changeState(GameStages.PLAY);
+                    try {
+                        changeState(GameStages.PLAY);
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(FXML_MainFrameController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                 }
             }
@@ -504,7 +557,7 @@ public class FXML_MainFrameController implements Initializable {
      * @param propertyChangeEvent - the event to deal with
      * @see initListener()
      */
-    private void manageEventsPlaceShipsOnPlayerBoard(PropertyChangeEvent propertyChangeEvent) {
+    private void manageEventsPlaceShipsOnPlayerBoard(PropertyChangeEvent propertyChangeEvent) throws RemoteException {
         String property = propertyChangeEvent.getPropertyName();
             
         /* On the player board, canceling ship insertion may be triggered
@@ -575,7 +628,7 @@ public class FXML_MainFrameController implements Initializable {
      * @param boardUI - board upon which the ship is located
      * @see initListener()
      */
-    private ShipType selectedShipType(FXML_BordUIController boardUI) {
+    private ShipType selectedShipType(FXML_BordUIController boardUI) throws RemoteException {
         int selectedShipIndex = this.getShipSelection().selectedShipIndex();        
         
         Ship selectedShip = boardUI.getBoardModel().getFleet().getShips().get(selectedShipIndex);
@@ -589,7 +642,7 @@ public class FXML_MainFrameController implements Initializable {
      * @param boardUI - the Board containing the cell
      * @see initListener()
      */
-    private void showExplosion(FXML_BordUIController boardUI) {
+    private void showExplosion(FXML_BordUIController boardUI) throws RemoteException {
         /* missileDestX and missileDestY represent the center of the hit cell */
         /* To reach the top-left position of the animation, we subtract half its width and height */        
         CellUI cellUI = boardUI.getMissileDestination();

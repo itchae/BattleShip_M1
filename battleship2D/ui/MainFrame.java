@@ -12,6 +12,7 @@ import battleship2D.model.ShipType;
 import battleship2D.model.Turn;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -83,7 +84,7 @@ public class MainFrame {
     /**
      * Constructor
      */
-    public MainFrame() {
+    public MainFrame() throws RemoteException {
         this.playerBoard = new BoardUIPlayer("Player", new BoardModel(CellType.OCEAN), true);
         this.shipInsertion = new ShipInsertion(this.playerBoard.getBoardModel().getFleet());
         
@@ -116,7 +117,7 @@ public class MainFrame {
      * Updates the stage of the game
      * @param gameStage new game stage
      */
-    public void changeState(GameStages gameStage) {
+    public void changeState(GameStages gameStage) throws RemoteException {
         setGameStage(gameStage);
         
         switch(this.gameStage) {
@@ -230,7 +231,7 @@ public class MainFrame {
      * @param shipType - the kind of ship that was hit
      * @see initListener()
      */
-    private void displayLastHitInfo(BoardUI boardUI, ShipType shipType) {
+    private void displayLastHitInfo(BoardUI boardUI, ShipType shipType) throws RemoteException {
         Fleet fleet = boardUI.getBoardModel().getFleet();
         Ship hitShip = fleet.findShipFromType(shipType);        
         
@@ -264,7 +265,7 @@ public class MainFrame {
      * @param cellModel - first cell of the span representing the ship
      * @see initListener()
      */    
-    private void displayValidShipSites(CellModelInterface cellModel) {          
+    private void displayValidShipSites(CellModelInterface cellModel) throws RemoteException {          
         int selectedShipIndex = getShipSelection().selectedShipIndex();        
         Ship selectedShip = this.playerBoard.getBoardModel().getFleet().getShips().get(selectedShipIndex);        
         int shipSize = selectedShip.getSize();        
@@ -280,7 +281,7 @@ public class MainFrame {
      * Initializes computer board's fleet and displays it
      * @see changeState()
      */
-    private void initComputerBoard() {
+    private void initComputerBoard() throws RemoteException {
         /* No action from both the player board and the ship selection widgets are allowed anymore */
         this.playerBoard.removePropertyChangeListener(this.propertyChangeListener);
         this.shipInsertion.removePropertyChangeListener(this.propertyChangeListener);
@@ -337,7 +338,11 @@ public class MainFrame {
         this.propertyChangeListener = (PropertyChangeEvent propertyChangeEvent) -> {
             
             if (this.gameStage ==  GameStages.PLACE_SHIPS_ON_PLAYER_BOARD) {
-                manageEventsPlaceShipsOnPlayerBoard(propertyChangeEvent);
+                try {
+                    manageEventsPlaceShipsOnPlayerBoard(propertyChangeEvent);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             else {  
                 String property = propertyChangeEvent.getPropertyName();
@@ -351,27 +356,63 @@ public class MainFrame {
                 if ("missileTargetReached".equals(property)) { 
                     if (this.turn == Turn.COMPUTER) {
                         CellUI destCellUI = this.playerBoard.getMissileDestination();
-                        destCellUI.updateAfterMissile();
+                        try {
+                            destCellUI.updateAfterMissile();
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         if (destCellUI.isLastHitAShip()) {
                             ShipType shipType = CellType.cellTypeToShipType(destCellUI.getLastHit());
-                            this.playerBoard.getBoardModel().getFleet().updateHits(shipType);
-                            showExplosion(this.playerBoard);
-                            displayLastHitInfo(this.playerBoard, shipType);
+                            try {
+                                this.playerBoard.getBoardModel().getFleet().updateHits(shipType);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            try {
+                                showExplosion(this.playerBoard);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            try {
+                                displayLastHitInfo(this.playerBoard, shipType);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                         this.turn = Turn.PLAYER;
                     }
                     else if (this.turn == Turn.PLAYER) {
                         CellUI destCellUI = this.computerBoard.getMissileDestination();
-                        destCellUI.updateAfterMissile();
+                        try {
+                            destCellUI.updateAfterMissile();
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         if (destCellUI.isLastHitAShip()) {
                             ShipType shipType = CellType.cellTypeToShipType(destCellUI.getLastHit());
-                            this.computerBoard.getBoardModel().getFleet().updateHits(shipType);
-                            showExplosion(computerBoard);
-                            displayLastHitInfo(this.computerBoard, shipType);                            
+                            try {
+                                this.computerBoard.getBoardModel().getFleet().updateHits(shipType);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            try {
+                                showExplosion(computerBoard);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            try {                            
+                                displayLastHitInfo(this.computerBoard, shipType);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                         this.turn = Turn.COMPUTER;            
                     }
-                    changeState(GameStages.PLAY);
+                    try {
+                        changeState(GameStages.PLAY);
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                 }
             }
@@ -458,7 +499,7 @@ public class MainFrame {
      * @param propertyChangeEvent - the event to deal with
      * @see initListener()
      */
-    private void manageEventsPlaceShipsOnPlayerBoard(PropertyChangeEvent propertyChangeEvent) {
+    private void manageEventsPlaceShipsOnPlayerBoard(PropertyChangeEvent propertyChangeEvent) throws RemoteException {
         String property = propertyChangeEvent.getPropertyName();
             
         /* On the player board, canceling ship insertion may be triggered
@@ -526,7 +567,7 @@ public class MainFrame {
      * @param boardUI - board upon which the ship is located
      * @see initListener()
      */
-    private ShipType selectedShipType(BoardUI boardUI) {
+    private ShipType selectedShipType(BoardUI boardUI) throws RemoteException {
         int selectedShipIndex = this.getShipSelection().selectedShipIndex();        
         
         Ship selectedShip = boardUI.getBoardModel().getFleet().getShips().get(selectedShipIndex);
@@ -540,7 +581,7 @@ public class MainFrame {
      * @param boardUI - the Board containing the cell
      * @see initListener()
      */
-    private void showExplosion(BoardUI boardUI) {
+    private void showExplosion(BoardUI boardUI) throws RemoteException {
         /* missileDestX and missileDestY represent the center of the hit cell */
         /* To reach the top-left position of the animation, we subtract half its width and height */        
         CellUI cellUI = boardUI.getMissileDestination();

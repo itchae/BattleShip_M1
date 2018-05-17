@@ -5,30 +5,32 @@
  */
 package battleship2D.model;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
  *
  * @author Jeremy
  */
-public interface CellModelInterface {
+public interface CellModelInterface extends Remote {
     /**
      * Displays informations
      * @return a brief description
      */
-    public String display();
+    public String display()throws RemoteException;
     
     /*
      * Getters / Setters
      */
     
-    public CellType getCellType() ;
+    public CellType getCellType()throws RemoteException ;
     
-    public  void setCellType (CellType cellType) ;
+    public  void setCellType (CellType cellType)throws RemoteException ;
     
-    public SimpleStringProperty getColorProperty();
+    public SimpleStringProperty getColorProperty()throws RemoteException;
     
-    public Integer getId() ;
+    public Integer getId() throws RemoteException;
     
-    public  void setId(Integer id);
+    public  void setId(Integer id)throws RemoteException;
 }

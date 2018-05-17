@@ -18,6 +18,7 @@ import battleship2D.model.SkillLevel;
 import battleship2D.ui.CellUI;
 import java.beans.PropertyChangeEvent;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -62,7 +63,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
     }    
     
     public void construct(String name, BoardModelInterface boardModel, Boolean isBound,
-            SkillLevel skillLevel){
+            SkillLevel skillLevel) throws RemoteException{
         super.construct(name, boardModel, isBound);
         this.futureTargets = new HashMap<>();
         this.lastCellTargeted = null;
@@ -97,7 +98,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * The method to find this cell depends on the computer skill level
      * @return - thecell coordinates
      */
-    public Coord2D findMissileDestinationCell() {
+    public Coord2D findMissileDestinationCell() throws RemoteException {
         Coord2D coord2D = null;
         
         switch (this.skillLevel) {
@@ -123,7 +124,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * Automatically places a whole fleet of ships on this board,
      * at random locations
      */
-    public void placeShipsOnBoardAtRandom() {
+    public void placeShipsOnBoardAtRandom() throws RemoteException {
         CellModelInterface cellModel;
         int shipSize;
         ArrayList<CellModelInterface> randomCellSpan;
@@ -224,7 +225,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * @return the set of cells
      * @see findMissileDestinationCellMedium()
      */
-    private ArrayList<CellModelInterface> collectCandidatesForFutureTarget(int size) {
+    private ArrayList<CellModelInterface> collectCandidatesForFutureTarget(int size) throws RemoteException {
         ArrayList<CellModelInterface> candidateCells = new ArrayList<>();
         
         /* Each cell of the copy board is scanned */
@@ -247,7 +248,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * @return the set of adjacent cells
      * @see findMissileDestinationCellExpert()
      */
-    private ArrayList<CellModelInterface> findAdjacentCells(CellModelInterface cellModel) {
+    private ArrayList<CellModelInterface> findAdjacentCells(CellModelInterface cellModel) throws RemoteException {
         ArrayList<CellModelInterface> adjacentCellsList = new ArrayList<>();
         adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.NORTH));
         adjacentCellsList.add(this.playerBoardModelCopy.adjacentCell(cellModel, Direction.WEST));
@@ -266,7 +267,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * @return - the cell coordinates of the next cell to target
      * @see findMissileDestinationCell()
      */
-    private Coord2D findMissileDestinationCellBeginner() {
+    private Coord2D findMissileDestinationCellBeginner() throws RemoteException {
         /* A non-visited cell is tagged as UNKNOWN */
         CellModelInterface cellModel = this.playerBoardModelCopy.randomCell(CellType.UNKNOWN, Boolean.TRUE);
         if (cellModel != null) {
@@ -287,7 +288,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * @return - the cell coordinates  of the next cell to target
      * @see findMissileDestinationCell()
      */
-    private Coord2D findMissileDestinationCellExpert() {
+    private Coord2D findMissileDestinationCellExpert() throws RemoteException {
         /* lastCellTargeted gives no hint about a ship: back to the default method */
         if (this.lastCellTargeted == null) {
             return this.findMissileDestinationCellMedium();
@@ -336,7 +337,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * @return - the cell coordinates of the next cell to target
      * @see findMissileDestinationCell()
      */
-    private Coord2D findMissileDestinationCellMedium() {
+    private Coord2D findMissileDestinationCellMedium() throws RemoteException {
         int largestSize = findSizeOfTheBiggestShipNotDestroyed();
 
         /* If largestSize = 1, any UNKNOWN cell in the copy board can be elected
@@ -365,7 +366,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * @return - the target cell coordinates 
      * @see findMissileDestinationCellExpert()
      */
-    private Coord2D findMissileDestinationFromFutureTargets() {
+    private Coord2D findMissileDestinationFromFutureTargets() throws RemoteException {
         CellModelInterface cellModel = selectAndRemoveFutureTarget();
         
         if (cellModel != null) {
@@ -428,7 +429,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * @param fleet - set of ships to deal with
      * @see BoardUIComputer()
      */
-    private void initAdverseShipInformation() {
+    private void initAdverseShipInformation() throws RemoteException {
         Fleet fleet = this.boardModel.getFleet();
         for (Ship ship  : fleet.getShips()) {
             this.adverseShipInformation.put(ship.getDescription(),ship.getSize());
@@ -446,7 +447,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * @return true if cellModel is a valid span center, false otherwise
      * @see collectCandidateCellsForFutureTargets()
      */
-    private boolean IsCellCenterOfUnknownSpan(CellModelInterface cellModel, int size) {
+    private boolean IsCellCenterOfUnknownSpan(CellModelInterface cellModel, int size) throws RemoteException {
         Coord2D coord2D = this.playerBoardModelCopy.cellCoords(cellModel);
 
         if (size % 2 == 1) /* odd */ {
@@ -480,7 +481,7 @@ public class FXML_BordUIComputerController extends FXML_BordUIController impleme
      * @return true if a valid span exists, false otherwise
      * @see IsCellCenterOfUnknownSpan()
      */
-    private boolean isCellCenterOfUnknownSpanAlongOneDirection(CellModelInterface cellModel, Direction direction, int spanLength) {        
+    private boolean isCellCenterOfUnknownSpanAlongOneDirection(CellModelInterface cellModel, Direction direction, int spanLength) throws RemoteException {        
         for (int i = 1; i <= spanLength; i++) {
             CellModelInterface adjacentCell = this.playerBoardModelCopy.adjacentCell(cellModel, direction, i);
             if (adjacentCell == null || adjacentCell.getCellType() != CellType.UNKNOWN) {

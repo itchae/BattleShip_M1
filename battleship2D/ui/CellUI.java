@@ -5,6 +5,9 @@ import battleship2D.model.CellModelInterface;
 import battleship2D.model.CellType;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -59,7 +62,11 @@ public class CellUI extends Region {
         super();
         this.cellModel = cellModel;
         
-        setStyle(isBound);
+        try {
+            setStyle(isBound);
+        } catch (RemoteException ex) {
+            Logger.getLogger(CellUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         setHighlight();        
         manageMouseEvents();
     }
@@ -67,7 +74,7 @@ public class CellUI extends Region {
     /**
      * Updates the type of the related CellModel with regard to its current state
      */
-    public void updateAfterMissile() {
+    public void updateAfterMissile() throws RemoteException {
         /* Depending on the associated BoardUI, the color of this cell 
             may not be bound to its related CellModel at creation. 
             This bind is now realized.
@@ -186,26 +193,30 @@ public class CellUI extends Region {
             }
             
             else if (mouseButton == MouseButton.PRIMARY) {                                
-                switch (this.cellModel.getCellType()) {
-                    case OCEAN:    
-                        this.pcsListeners.firePropertyChange("cellUIOcean", null, this.cellModel);
-                        break;
-                    
-                    case AVAILABLE_LOCATION:        
-                        this.pcsListeners.firePropertyChange("cellUIAvailableLocation", null, this.cellModel);
-                        break;
-                    
-                    case UNKNOWN:                        
+                try {
+                    switch (this.cellModel.getCellType()) {
+                        case OCEAN:
+                            this.pcsListeners.firePropertyChange("cellUIOcean", null, this.cellModel);
+                            break;
+                            
+                        case AVAILABLE_LOCATION:
+                            this.pcsListeners.firePropertyChange("cellUIAvailableLocation", null, this.cellModel);
+                            break;
+                                                    
+                        case UNKNOWN:
                         case BATTLESHIP:
                         case CARRIER:
                         case CRUISER:
                         case DESTROYER:
                         case SUBMARINE:                                                    
                             this.pcsListeners.firePropertyChange("cellUIUnknownOrShip", null, this);
-                        break;                    
-                        
-                    default:
-                        break;
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                } catch (RemoteException ex) {
+                    Logger.getLogger(CellUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             highlightTransition.setRate(-1);
@@ -217,7 +228,7 @@ public class CellUI extends Region {
      * Actually bind this with the color of its related cell
      * @see setStyle()
      */
-    private void bindCellModelColor() {
+    private void bindCellModelColor() throws RemoteException {
         this.cellModelColorProperty = new SimpleStringProperty();
         this.cellModelColorProperty.bind(this.cellModel.getColorProperty());
 
@@ -259,7 +270,7 @@ public class CellUI extends Region {
      * @param isBound - determines whether this CellUI's style is bound to cell model's
      * @see CellUI()
      */
-    private void setStyle(Boolean isBound) {             
+    private void setStyle(Boolean isBound) throws RemoteException {             
         if (isBound) {
             bindCellModelColor();        
         }

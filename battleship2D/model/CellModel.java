@@ -1,12 +1,15 @@
 package battleship2D.model;
 
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
  * Board model element
  * @author xaviator
  */
-public class CellModel implements CellModelInterface {
+public class CellModel extends UnicastRemoteObject implements CellModelInterface,Serializable {
     /*=========================================================================*/
     /* Members                                                                 */       
     /*=========================================================================*/
@@ -30,7 +33,8 @@ public class CellModel implements CellModelInterface {
      * @param cellType - associated cell type
      * @param id - identifier
      */
-    public CellModel(CellType cellType, Integer id) {
+    
+    public CellModel(CellType cellType, Integer id) throws RemoteException {
         this.colorProperty = new SimpleStringProperty();
         
         setCellType(cellType);
@@ -40,8 +44,9 @@ public class CellModel implements CellModelInterface {
     /**
      * Displays informations
      * @return a brief description
-     */
-    public String display() {
+     */ 
+    @Override
+    public String display()throws RemoteException {
         return "[" + this.id + " - " + this.cellType.getDescription() + " - " 
                 + this.cellType.getAppearance() + "]";
     }
@@ -49,25 +54,26 @@ public class CellModel implements CellModelInterface {
     /*
      * Getters / Setters
      */
-    
-    public CellType getCellType() {
+     @Override
+    public CellType getCellType() throws RemoteException{
         return this.cellType;
     }
-    
-    public final void setCellType (CellType cellType) {
+     @Override
+    public final void setCellType (CellType cellType) throws RemoteException{
         this.cellType = cellType;
         this.colorProperty.setValue(this.cellType.getAppearance());
     }
-    
-    public SimpleStringProperty getColorProperty() {
+     @Override
+    public SimpleStringProperty getColorProperty() throws RemoteException{
         return this.colorProperty;
     }
-    
-    public Integer getId() {
+     @Override
+    public Integer getId() throws RemoteException{
         return this.id;
     }
     
-    public final void setId(Integer id) {
+    @Override
+    public final void setId(Integer id) throws RemoteException{
         this.id = id;
     }
 }
