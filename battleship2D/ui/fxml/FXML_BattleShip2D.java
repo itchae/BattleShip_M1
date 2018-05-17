@@ -39,21 +39,13 @@ public class FXML_BattleShip2D extends Application   {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        try {
-      // Localisation du fichier FXML.
-      final URL url = getClass().getResource("FXML_MainFrame.fxml");
-      // Création du loader.
-      final FXMLLoader fxmlLoader = new FXMLLoader(url);
-      // Chargement du FXML.
-      root = (Pane) fxmlLoader.load();
-      // config du controller
-      ((FXML_MainFrameController)fxmlLoader.getController()).changeState(GameStages.PLACE_SHIPS_ON_PLAYER_BOARD); 
-      
-        
-      // Création de la scène.;
-    } catch (IOException ex) {
-      System.err.println("Erreur au chargement: " + ex);
-    }   
+	try {
+	  final URL url = getClass().getResource("FXML_MainMenu.fxml");
+	  final FXMLLoader fxmlLoader = new FXMLLoader(url);
+	  root = (Pane) fxmlLoader.load();
+	} catch (IOException ex) {
+	  System.err.println("Erreur au chargement: " + ex);
+	}   
         
        if (root != null){
         Scene scene = new Scene(FXML_BattleShip2D.root, 900,600);
