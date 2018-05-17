@@ -1,5 +1,7 @@
 package battleship2D.model;
 
+import battleship2D.ui.Config;
+
 /**
  * Ship types
  * @author xaviator
@@ -9,11 +11,11 @@ public enum ShipType {
     /* Members                                                                 */       
     /*=========================================================================*/
     
-    BATTLESHIP("Battleship", "-fx-background-image: url(\"battleship2D/pictures/battleship.jpg\")"),
-    CARRIER("Carrier", "-fx-background-image: url(\"battleship2D/pictures/carrier.jpg\")"),
-    CRUISER("Cruiser", "-fx-background-image: url(\"battleship2D/pictures/cruiser.jpg\")"),
-    DESTROYER("Destroyer", "-fx-background-image: url(\"battleship2D/pictures/destroyer.jpg\")"),
-    SUBMARINE("Submarine", "-fx-background-image: url(\"battleship2D/pictures/submarine.jpeg\")");
+    BATTLESHIP("Battleship", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/battleship.jpg\")"),
+    CARRIER("Carrier", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/carrier.jpg\")"),
+    CRUISER("Cruiser", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/cruiser.jpg\")"),
+    DESTROYER("Destroyer", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/destroyer.jpg\")"),
+    SUBMARINE("Submarine", "-fx-background-image: url(\"battleship2D/pictures/"+Config.dossier+"/submarine.jpeg\")");
 
     /** Rendering either as a color or an image */
     private final String appearance;

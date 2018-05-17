@@ -14,6 +14,8 @@ public class Config {
     /** Default computer skill level */
     public static final SkillLevel level = SkillLevel.EXPERT;
     
+     public static String dossier = "default";
+    
     /**
      * Constructor
      */

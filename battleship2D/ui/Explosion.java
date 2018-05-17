@@ -60,7 +60,7 @@ public class Explosion extends Region {
         this.colors = new Paint[181];
         initColors();        
         
-        this.backgroundImage = new ImageView(getClass().getResource("/battleship2D/pictures/ship-explosion.jpg").toExternalForm());        
+        this.backgroundImage = new ImageView(getClass().getResource("/battleship2D/pictures/"+Config.dossier+"/ship-explosion.jpg").toExternalForm());        
         initBackground();
                 
         this.canvas = new Canvas(defaultWidth,defaultHeight);        
