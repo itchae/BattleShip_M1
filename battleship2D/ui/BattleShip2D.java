@@ -30,21 +30,8 @@ public class BattleShip2D extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-               //choix du theme
-        Stage choixTheme = new Stage();
-        choixTheme.initModality(Modality.APPLICATION_MODAL);
-        choixTheme.initOwner(primaryStage);
-        ObservableList<String> options = 
-    FXCollections.observableArrayList(
-        "default",
-            "etienne"
-    );
-        ComboBox choix = new ComboBox(options);
+         Config.configStyle(primaryStage);
         
-        choix.setValue("default");
-        choixTheme.setScene(new Scene(choix,100,100));
-        choixTheme.showAndWait();
-        Config.dossier = (String)choix.getValue();
         BattleShip2D.mainFrame = new MainFrame();            
         BattleShip2D.mainFrame.changeState(GameStages.PLACE_SHIPS_ON_PLAYER_BOARD);               
         
