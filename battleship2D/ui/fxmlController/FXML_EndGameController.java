@@ -1,5 +1,6 @@
 package battleship2D.ui.fxmlController;
 
+import battleship2D.ui.Config;
 import battleship2D.ui.fxml.FXML_BattleShip2D;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -11,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -41,6 +43,9 @@ public class FXML_EndGameController implements Initializable {
     /** Animation player */
     private  Timeline timeline;
     
+    @FXML
+    private AnchorPane root;
+    
     
     
     @FXML
@@ -57,11 +62,13 @@ public class FXML_EndGameController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        root.setStyle("-fx-background-image: url(\"/battleship2D/pictures/"+Config.dossier+"/battleship-endgame.png\");");
+        win.setImage(new Image("/battleship2D/pictures/"+Config.dossier+"/wins.png"));
         if (FXML_BattleShip2D.getPlayerWin()) {
-            this.winnerName.setImage(new Image("/battleship2D/pictures/player.png"));
+            this.winnerName.setImage(new Image("/battleship2D/pictures/"+Config.dossier+"/player.png"));
         }
         else {
-            this.winnerName.setImage(new Image("/battleship2D/pictures/computer.png"));
+            this.winnerName.setImage(new Image("/battleship2D/pictures/"+Config.dossier+"/computer.png"));
         }
         
         initWinner();    
@@ -117,11 +124,11 @@ public class FXML_EndGameController implements Initializable {
      */
     private void initWinner() {
 	if (FXML_BattleShip2D.getPlayerWin()) {
-	    Image img = new Image("/battleship2D/pictures/player.png");
+	    Image img = new Image("/battleship2D/pictures/"+Config.dossier+"/player.png");
             this.winnerName.setImage(img);
         }
         else {
-            this.winnerName.setImage(new Image("/battleship2D/pictures/computer.png"));
+            this.winnerName.setImage(new Image("/battleship2D/pictures/"+Config.dossier+"/computer.png"));
         }
         this.winnerName.setFitHeight(0);
         this.winnerName.setFitWidth(0);

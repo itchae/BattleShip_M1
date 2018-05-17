@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="400.0" prefWidth="600.0" styleClass="border" stylesheets="@../fxmlCSS/fxml_mainmenu.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="battleship2D.ui.fxmlController.FXML_MainMenuController">
+<AnchorPane fx:id="root" prefHeight="400.0" prefWidth="600.0"  xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="battleship2D.ui.fxmlController.FXML_MainMenuController">
     <children>
        <BorderPane fx:id="mainMenu" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">   
         <top>

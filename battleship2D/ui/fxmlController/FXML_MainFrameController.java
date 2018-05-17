@@ -108,7 +108,7 @@ public class FXML_MainFrameController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
         try {
             //construct
             playerController.construct("Player", new BoardModel(CellType.OCEAN), true);

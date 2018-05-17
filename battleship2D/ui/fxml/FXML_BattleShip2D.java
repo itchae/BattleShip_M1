@@ -5,15 +5,21 @@
  */
 package battleship2D.ui.fxml;
 
+import battleship2D.ui.Config;
 import battleship2D.ui.GameStages;
 import battleship2D.ui.fxmlController.FXML_MainFrameController;
 import java.io.IOException;
 import java.net.URL;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -39,6 +45,21 @@ public class FXML_BattleShip2D extends Application   {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
+         //choix du theme
+        Stage choixTheme = new Stage();
+        choixTheme.initModality(Modality.APPLICATION_MODAL);
+        choixTheme.initOwner(primaryStage);
+        ObservableList<String> options = 
+    FXCollections.observableArrayList(
+        "default"
+    );
+        ComboBox choix = new ComboBox(options);
+        choix.setValue("default");
+        choixTheme.setScene(new Scene(choix,100,100));
+        choixTheme.showAndWait();
+        Config.dossier = (String)choix.getValue();
+        
+        //chargement du jeu
 	try {
 	  final URL url = getClass().getResource("FXML_MainMenu.fxml");
 	  final FXMLLoader fxmlLoader = new FXMLLoader(url);
