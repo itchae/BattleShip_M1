@@ -3,8 +3,13 @@ package battleship2D.ui;
 import battleship2D.model.SkillLevel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -34,7 +39,21 @@ public class Config {
     );
         ComboBox choix = new ComboBox(options);
         choix.setValue("default");
-        choixTheme.setScene(new Scene(choix,100,100));
+        
+        Button dialogCloseButton = new Button("comfirmer");
+        dialogCloseButton.setAlignment(Pos.CENTER);
+        dialogCloseButton.prefWidthProperty().bind(choixTheme.widthProperty());
+        dialogCloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+           @Override
+           public void handle(MouseEvent t) {
+               choixTheme.close();
+           }
+       });
+        BorderPane layout = new BorderPane();
+        layout.setCenter(choix);
+        layout.setBottom(dialogCloseButton);
+        
+        choixTheme.setScene(new Scene(layout,100,100));
         choixTheme.showAndWait();
         Config.dossier = (String)choix.getValue();
      }
